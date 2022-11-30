@@ -5,9 +5,10 @@ import com.foofinc.cfbra.entity.CompleteTeam;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class Teams {
 
-    private List<CompleteTeam> completeTeams;
+    private final List<CompleteTeam> completeTeams;
 
     public Teams() {
         this.completeTeams = new ArrayList<>();

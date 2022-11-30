@@ -2,7 +2,12 @@ package com.foofinc.cfbra.json.jsondatastructures;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-//POJO to map from all schools JSON
+/*
+This class is a Data Structure used to hold data from Jackson's objectmapper object.
+POJO to map from all schools JSON
+No-Arg constructor and basic getter/setter methods for jackson mapping
+Arg constructor for testing
+ */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class School {
@@ -12,6 +17,15 @@ public class School {
 
     public String getSchool() {
         return school;
+    }
+
+    public School() {
+    }
+
+    public School(String school, String mascot, String abbreviation) {
+        this.school = school;
+        this.mascot = mascot;
+        this.abbreviation = abbreviation;
     }
 
     public void setSchool(String school) {
