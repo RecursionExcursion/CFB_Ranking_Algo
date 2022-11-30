@@ -30,7 +30,7 @@ public class Controller {
     public Controller() {
         cfbApi = new CFB_API();
         schoolMap = new HashMap<>();
-        teams = new Teams();
+        teams = Teams.getInstance();
         weeks = new ArrayList<>();
 
         mapAPIDataToCompletedSchools();

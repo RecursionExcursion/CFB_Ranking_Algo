@@ -1,9 +1,11 @@
 package com.foofinc.cfbra.entity;
 
+import com.foofinc.cfbra.json.Teams;
 import com.foofinc.cfbra.json.jsondatastructures.Fixture;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class CompleteTeam {
 
@@ -19,6 +21,8 @@ public class CompleteTeam {
     private int pointsAllowed;
     private int pointsFor;
 
+    private int strengthOfSchedule;
+
     //TODO Add conference stats????
 
     public CompleteTeam(String name) {
@@ -30,6 +34,7 @@ public class CompleteTeam {
         totalDefense = 0;
         pointsAllowed = 0;
         pointsFor = 0;
+        strengthOfSchedule = 0;
     }
 
     public void setName(String name) {
@@ -108,6 +113,49 @@ public class CompleteTeam {
         return pointsFor;
     }
 
+    public int getStrengthOfSchedule() {
+        strengthOfSchedule = calculateStrOfSched();
+        return strengthOfSchedule;
+    }
+
+    private int calculateStrOfSched() {
+        int schedStr = 0;
+
+        List<CompleteTeam> allTeams = Teams.getInstance().getCompleteTeams();
+
+        for (Fixture fix : schedule.games) {
+
+            CompleteTeam opponent = null;
+
+            String team0Name = fix.getTeams()[0].getSchool();
+            String team1Name = fix.getTeams()[1].getSchool();
+
+
+            if (team0Name.equals(this.name)) {
+                for (CompleteTeam ct : allTeams) {
+                    if (ct.name.equals(team1Name)) {
+                        opponent = ct;
+                        break;
+                    }
+                }
+            } else {
+                for (CompleteTeam ct : allTeams) {
+                    if (ct.name.equals(team0Name)) {
+                        opponent = ct;
+                        break;
+                    }
+                }
+            }
+
+            Optional<CompleteTeam> optionalOpponents =
+                    Optional.of(Optional.ofNullable(opponent).orElseGet(() -> new CompleteTeam("Null Team")));
+            opponent = optionalOpponents.get();
+            schedStr += opponent.getWins();
+
+        }
+        return schedStr;
+    }
+
     @Override
     public String toString() {
         return "\n#" + rank + " " + name +
@@ -115,7 +163,8 @@ public class CompleteTeam {
                 " PF-" + pointsFor +
                 " PA-" + pointsAllowed +
                 " Offense-" + totalOffense +
-                " Defense-" + totalDefense;
+                " Defense-" + totalDefense +
+                " Schedule_Strength-" + strengthOfSchedule;
     }
 
     class Schedule {

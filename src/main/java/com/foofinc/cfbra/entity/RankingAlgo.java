@@ -7,7 +7,7 @@ import java.util.*;
 public class RankingAlgo {
 
     private final List<CompleteTeam> teams;
-    private final Map<CompleteTeam, Integer> teamRankWeight;
+    private final Map<CompleteTeam, Double> teamRankWeight;
     private List<CompleteTeam> rankedTeams;
 
 
@@ -16,8 +16,9 @@ public class RankingAlgo {
     private List<CompleteTeam> teamsRankedByPointsAllowed;
     private List<CompleteTeam> teamsRankedByTotalOffense;
     private List<CompleteTeam> teamsRankedByTotalDefense;
+    private List<CompleteTeam> teamsRankedByStrengthOfSchedule;
 
-    private List<Map.Entry<CompleteTeam, Integer>> teamsRankedByTotalWeight;
+    private List<Map.Entry<CompleteTeam, Double>> teamsRankedByTotalWeight;
 
 
     public RankingAlgo() {
@@ -28,7 +29,7 @@ public class RankingAlgo {
 
     public void addTeam(CompleteTeam team) {
         teams.add(team);
-        teamRankWeight.put(team, 0);
+        teamRankWeight.put(team, 0.0);
     }
 
     public void rankTeams() {
@@ -36,7 +37,7 @@ public class RankingAlgo {
         getWeightedRankings();
 
         teamsRankedByTotalWeight = teamRankWeight.entrySet().stream()
-                                                 .sorted(Comparator.comparingInt(Map.Entry::getValue))
+                                                 .sorted(Comparator.comparingDouble(Map.Entry::getValue))
                                                  .toList();
 
 
@@ -53,6 +54,7 @@ public class RankingAlgo {
         teamsRankedByPointsAllowed = rankTeamsPointsAllowed();
         teamsRankedByTotalOffense = rankTeamsByOffense();
         teamsRankedByTotalDefense = rankTeamsByDefense();
+        teamsRankedByStrengthOfSchedule = rankTeamsByStrengthOfSchedule();
     }
 
     private void getWeightedRankings() {
@@ -61,6 +63,7 @@ public class RankingAlgo {
         getWeightOfRankings(teamsRankedByPointsAllowed, "getPointsAllowed");
         getWeightOfRankings(teamsRankedByTotalOffense, "getTotalOffense");
         getWeightOfRankings(teamsRankedByTotalDefense, "getTotalDefense");
+        getWeightOfRankings(teamsRankedByStrengthOfSchedule, "getStrengthOfSchedule");
     }
 
     private void getWeightOfRankings(List<CompleteTeam> rankedTeams, String methodName) {
@@ -119,6 +122,12 @@ public class RankingAlgo {
     private List<CompleteTeam> rankTeamsByDefense() {
         return teams.stream()
                     .sorted(Comparator.comparing(CompleteTeam::getTotalDefense))
+                    .toList();
+    }
+
+    private List<CompleteTeam> rankTeamsByStrengthOfSchedule() {
+        return teams.stream()
+                    .sorted(Comparator.comparing(CompleteTeam::getStrengthOfSchedule).reversed())
                     .toList();
     }
 
