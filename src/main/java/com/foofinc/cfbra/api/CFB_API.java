@@ -3,21 +3,20 @@ package com.foofinc.cfbra.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.foofinc.cfbra.json.jsondatastructures.School;
 import com.foofinc.cfbra.json.jsondatastructures.Fixture;
+import com.foofinc.cfbra.json.jsondatastructures.School;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public final class CFB_API {
 
-    //    private final String gamesUrlString = "https://api.collegefootballdata.com/games?year=2022&seasonType=regular&division" +
-//            "=fbs";
     private final String schoolsUrlString = "https://api.collegefootballdata.com/teams/fbs?year=2022";
 
     //Must append "&team=michigan"
@@ -25,30 +24,41 @@ public final class CFB_API {
             ".com/games/teams?year=2022&seasonType=regular";
 
 
-    //Must append "&team=michigan"
-    private final String teamGamesUrlStringTest = "https://api.collegefootballdata" +
-            ".com/games/teams?year=2022&seasonType=regular&team=michigan";
-
-
-    //    private List<Game> games;
-    private List<Fixture> games;
     private List<School> schools;
+    private final List<Fixture[]> weeks = new ArrayList<>();
 
 
-    public void get() {
+    public CFB_API() {
+        getAllSchools();
+        getFixturesForAllWeeks();
+    }
+
+
+    private void getAllSchools() {
+        schools = sendGetRequestForAllAFBSSchools();
+    }
+
+    private void getFixturesForAllWeeks() {
+        int startingWeek = 1, weeksInSeason = 13;
+        for (int i = startingWeek; i <= weeksInSeason; i++) {
+            weeks.add(sendGetRequestForWeekFixtures(i));
+        }
+    }
+
+    private List<School> sendGetRequestForAllAFBSSchools() {
         try {
-            schools = mapSchoolsFromJSON(getJSON(schoolsUrlString));
+            return mapSchoolsFromJSON(getJSON(schoolsUrlString));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public List<Fixture> getGames() {
-        return List.copyOf(games);
-    }
-
-    public List<School> getSchools() {
-        return List.copyOf(schools);
+    private Fixture[] sendGetRequestForWeekFixtures(int week) {
+        try {
+            return mapWeekFromJSON(getJSON(teamGamesUrlString + "&week=" + week));
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
     }
 
     private String getJSON(String s) throws IOException {
@@ -74,25 +84,22 @@ public final class CFB_API {
         }
     }
 
-
     private List<School> mapSchoolsFromJSON(String jsonString) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(jsonString, new TypeReference<>() {
         });
     }
 
-    public List<Fixture> getFixtures(int week) {
-        try {
-            return mapTeamFromJSON(getJSON(teamGamesUrlString + "&week=" + week));
-        } catch (IOException e) {
-            throw new RuntimeException("Hi"+e);
-        }
-
+    private Fixture[] mapWeekFromJSON(String jsonString) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(jsonString, Fixture[].class);
     }
 
-    private List<Fixture> mapTeamFromJSON(String jsonString) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(jsonString, new TypeReference<>() {
-        });
+    public List<Fixture[]> getWeeks() {
+        return List.copyOf(weeks);
+    }
+
+    public List<School> getSchools() {
+        return List.copyOf(schools);
     }
 }

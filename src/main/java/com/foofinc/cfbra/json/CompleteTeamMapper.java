@@ -11,8 +11,8 @@ import java.util.Map;
 
 public class CompleteTeamMapper {
 
-    private Map.Entry<School, List<Fixture>> entry;
-    private CompleteTeam completeTeam;
+    private final Map.Entry<School, List<Fixture>> entry;
+    private final CompleteTeam completeTeam;
 
 
     public CompleteTeamMapper(Map.Entry<School, List<Fixture>> entry) {

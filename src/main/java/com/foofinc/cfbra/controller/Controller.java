@@ -9,44 +9,52 @@ import com.foofinc.cfbra.json.jsondatastructures.Fixture;
 import com.foofinc.cfbra.json.jsondatastructures.School;
 import com.foofinc.cfbra.json.jsondatastructures.Team;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Controller {
 
-    private final List<List<Fixture>> weeks;
+    //API to access CFB JSON
     private final CFB_API cfbApi;
+
+    //Rudimentary DS to hold School(Jackson DS) and List<Fixture(Jackson DS)>
     private final Map<School, List<Fixture>> schoolMap;
-    Teams teams;
+
+    //List<CompletedSchools> wrapped in class
+    private final Teams teams;
+
+    //DS holding weeks worth of Fixtures(Jackson DS). (Ex. Week 1, Week 2, etc...)
+    //TODO Smell? Should 'weeks' being in its own wrapper class?
+    private List<List<Fixture>> weeks;
 
 
     public Controller() {
         cfbApi = new CFB_API();
-        cfbApi.get();
-
-        weeks = new ArrayList<>();
         schoolMap = new HashMap<>();
-        cfbApi.getSchools().forEach(s -> schoolMap.putIfAbsent(s, new ArrayList<>()));
         teams = new Teams();
+        weeks = new ArrayList<>();
 
-        getFixtures();
-        parseGames();
-        completeSchools();
+        mapAPIDataToCompletedSchools();
 
-        RankingAlgo rankingAlgo = new RankingAlgo();
-        for(CompleteTeam team:teams.getCompleteTeams()){
-            rankingAlgo.addTeam(team);
-        }
-        rankingAlgo.rankTeams();
+        RankingAlgo rankingAlgo = initializeRA();
         System.out.println(rankingAlgo);
     }
 
+
+    private void mapAPIDataToCompletedSchools() {
+        mapSchoolsFromAPIToMap();
+        getFixtures();
+        parseGames();
+        completeSchools();
+    }
+
+    private void mapSchoolsFromAPIToMap() {
+        cfbApi.getSchools().forEach(s -> schoolMap.putIfAbsent(s, new ArrayList<>()));
+    }
+
     private void getFixtures() {
-        for (int i = 1; i <= 13; i++) {
-            weeks.add(cfbApi.getFixtures(i));
-        }
+        weeks = cfbApi.getWeeks().stream()
+                      .map(List::of)
+                      .toList();
     }
 
     private void parseGames() {
@@ -66,10 +74,18 @@ public class Controller {
         }
     }
 
-    private void completeSchools(){
-        for(Map.Entry<School,List<Fixture>> entry: schoolMap.entrySet()){
+    private void completeSchools() {
+        for (Map.Entry<School, List<Fixture>> entry : schoolMap.entrySet()) {
             teams.getCompleteTeams().add(new CompleteTeamMapper(entry).getCompleteTeam());
         }
     }
 
+    private RankingAlgo initializeRA() {
+        RankingAlgo rankingAlgo = new RankingAlgo();
+        for (CompleteTeam team : teams.getCompleteTeams()) {
+            rankingAlgo.addTeam(team);
+        }
+        rankingAlgo.rankTeams();
+        return rankingAlgo;
+    }
 }
