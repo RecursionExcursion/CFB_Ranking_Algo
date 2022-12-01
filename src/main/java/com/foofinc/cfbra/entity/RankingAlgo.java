@@ -49,12 +49,12 @@ public class RankingAlgo {
     }
 
     private void rankTeamsByCategory() {
-        teamsRankedByRecord = rankTeamsByRecord();
-        teamsRankedByPointsFor = rankTeamsByPointsFor();
-        teamsRankedByPointsAllowed = rankTeamsPointsAllowed();
-        teamsRankedByTotalOffense = rankTeamsByOffense();
-        teamsRankedByTotalDefense = rankTeamsByDefense();
-        teamsRankedByStrengthOfSchedule = rankTeamsByStrengthOfSchedule();
+        teamsRankedByRecord = rankTeamsByMethodCalled("getWins");
+        teamsRankedByPointsFor = rankTeamsByMethodCalled("getPointsFor");
+        teamsRankedByPointsAllowed = rankTeamsByMethodCalled("getPointsAllowed");
+        teamsRankedByTotalOffense = rankTeamsByMethodCalled("getTotalOffense");
+        teamsRankedByTotalDefense = rankTeamsByMethodCalled("getTotalDefense");
+        teamsRankedByStrengthOfSchedule = rankTeamsByMethodCalled("getStrengthOfSchedule");
     }
 
     private void getWeightedRankings() {
@@ -64,6 +64,7 @@ public class RankingAlgo {
         getWeightOfRankings(teamsRankedByTotalOffense, "getTotalOffense");
         getWeightOfRankings(teamsRankedByTotalDefense, "getTotalDefense");
         getWeightOfRankings(teamsRankedByStrengthOfSchedule, "getStrengthOfSchedule");
+        setWeight();
     }
 
     private void getWeightOfRankings(List<CompleteTeam> rankedTeams, String methodName) {
@@ -93,42 +94,36 @@ public class RankingAlgo {
         }
     }
 
-    private List<CompleteTeam> rankTeamsByRecord() {
-        return teams.stream()
-                    .sorted(Comparator.comparing(CompleteTeam::getWins).reversed())
-                    .toList();
+    private List<CompleteTeam> rankTeamsByMethodCalled(String methodName) {
+
+        return switch (methodName) {
+            case "getWins" -> teams.stream()
+                                   .sorted(Comparator.comparing(CompleteTeam::getWins).reversed()).toList();
+
+            case "getPointsFor" -> teams.stream()
+                                        .sorted(Comparator.comparingInt(CompleteTeam::getPointsFor).reversed())
+                                        .toList();
+
+            case "getPointsAllowed" -> teams.stream()
+                                            .sorted(Comparator.comparingInt(CompleteTeam::getPointsAllowed)).toList();
+
+            case "getTotalOffense" -> teams.stream()
+                                           .sorted(Comparator.comparingInt(CompleteTeam::getTotalOffense).reversed())
+                                           .toList();
+
+            case "getTotalDefense" -> teams.stream()
+                                           .sorted(Comparator.comparing(CompleteTeam::getTotalDefense)).toList();
+
+            case "getStrengthOfSchedule" -> teams.stream()
+                                                 .sorted(Comparator.comparing(CompleteTeam::getStrengthOfSchedule)
+                                                                   .reversed()).toList();
+
+            default -> throw new IllegalArgumentException("Method does not exist for object of type 'CompleteTeam'");
+        };
     }
 
-    private List<CompleteTeam> rankTeamsByPointsFor() {
-        return teams.stream()
-                    .sorted(Comparator.comparingInt(CompleteTeam::getPointsFor).reversed())
-                    .toList();
-
-    }
-
-    private List<CompleteTeam> rankTeamsPointsAllowed() {
-        return teams.stream()
-                    .sorted(Comparator.comparingInt(CompleteTeam::getPointsAllowed))
-                    .toList();
-    }
-
-    private List<CompleteTeam> rankTeamsByOffense() {
-        return teams.stream()
-                    .sorted(Comparator.comparingInt(CompleteTeam::getTotalOffense).reversed())
-                    .toList();
-
-    }
-
-    private List<CompleteTeam> rankTeamsByDefense() {
-        return teams.stream()
-                    .sorted(Comparator.comparing(CompleteTeam::getTotalDefense))
-                    .toList();
-    }
-
-    private List<CompleteTeam> rankTeamsByStrengthOfSchedule() {
-        return teams.stream()
-                    .sorted(Comparator.comparing(CompleteTeam::getStrengthOfSchedule).reversed())
-                    .toList();
+    private void setWeight() {
+        teamRankWeight.forEach((key, value) -> key.setWeight(value));
     }
 
     private void setRankings(List<CompleteTeam> rankings) {

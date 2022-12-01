@@ -12,6 +12,7 @@ public class CompleteTeam {
     private String name;
     private int rank;
     private Record record;
+    private Double weight;
 
     private Schedule schedule;
 
@@ -35,6 +36,7 @@ public class CompleteTeam {
         pointsAllowed = 0;
         pointsFor = 0;
         strengthOfSchedule = 0;
+        weight = 0.0;
     }
 
     public void setName(String name) {
@@ -118,6 +120,14 @@ public class CompleteTeam {
         return strengthOfSchedule;
     }
 
+    public Double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Double weight) {
+        this.weight = weight;
+    }
+
     private int calculateStrOfSched() {
         int schedStr = 0;
 
@@ -160,11 +170,12 @@ public class CompleteTeam {
     public String toString() {
         return "\n#" + rank + " " + name +
                 " " + record +
-                " PF-" + pointsFor +
-                " PA-" + pointsAllowed +
-                " Offense-" + totalOffense +
-                " Defense-" + totalDefense +
-                " Schedule_Strength-" + strengthOfSchedule;
+                " | PF-" + pointsFor +
+                " | PA-" + pointsAllowed +
+                " | Offense-" + totalOffense +
+                " | Defense-" + totalDefense +
+                " | Schedule_Strength-" + strengthOfSchedule +
+                " | Weight-" + weight;
     }
 
     class Schedule {

@@ -47,4 +47,10 @@ public class School {
     public void setAbbreviation(String abbreviation) {
         this.abbreviation = abbreviation;
     }
+
+    @Override
+    public String toString() {
+        String divider = "|";
+        return school + divider + mascot + divider + abbreviation + divider;
+    }
 }

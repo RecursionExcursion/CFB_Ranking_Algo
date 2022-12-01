@@ -2,6 +2,8 @@ package com.foofinc.cfbra.json.jsondatastructures;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.Arrays;
+
 /*
 This class is a Data Structure used to hold data from Jackson's objectmapper object.
 POJO to map game from weekly games JSON
@@ -30,7 +32,8 @@ public class Fixture {
 
     @Override
     public String toString() {
-        return teams[0].getSchool() + " " + teams[0].getPoints() +
-                " - " + teams[1].getSchool() + " " + teams[1].getPoints();
+        return "Fixture{" +
+                "teams=" + Arrays.toString(teams) +
+                '}';
     }
 }

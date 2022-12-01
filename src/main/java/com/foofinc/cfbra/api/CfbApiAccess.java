@@ -15,34 +15,41 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public final class CFB_API {
+public final class CfbApiAccess {
 
     private final String schoolsUrlString = "https://api.collegefootballdata.com/teams/fbs?year=2022";
 
-    //Must append "&team=michigan"
     private final String teamGamesUrlString = "https://api.collegefootballdata" +
             ".com/games/teams?year=2022&seasonType=regular";
 
+    private final List<School> schools;
+    private final List<Fixture[]> weeks;
 
-    private List<School> schools;
-    private final List<Fixture[]> weeks = new ArrayList<>();
 
-
-    public CFB_API() {
-        getAllSchools();
-        getFixturesForAllWeeks();
+    public CfbApiAccess() {
+        schools = getAllSchools();
+        weeks = getFixturesForAllWeeks();
     }
 
-
-    private void getAllSchools() {
-        schools = sendGetRequestForAllAFBSSchools();
+    public List<Fixture[]> getWeeks() {
+        return List.copyOf(weeks);
     }
 
-    private void getFixturesForAllWeeks() {
+    public List<School> getSchools() {
+        return List.copyOf(schools);
+    }
+
+    private List<School> getAllSchools() {
+        return sendGetRequestForAllAFBSSchools();
+    }
+
+    private List<Fixture[]> getFixturesForAllWeeks() {
+        List<Fixture[]> tempFixes = new ArrayList<>();
         int startingWeek = 1, weeksInSeason = 13;
         for (int i = startingWeek; i <= weeksInSeason; i++) {
-            weeks.add(sendGetRequestForWeekFixtures(i));
+            tempFixes.add(sendGetRequestForWeekFixtures(i));
         }
+        return tempFixes;
     }
 
     private List<School> sendGetRequestForAllAFBSSchools() {
@@ -61,29 +68,6 @@ public final class CFB_API {
         }
     }
 
-    private String getJSON(String s) throws IOException {
-        URL url = new URL(s);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-        conn.setRequestProperty("Authorization", "Bearer " + "gLQdG5n7YtiTjzu/bxxxd+rdzzrhWftHTtIH7PAGVWlAQMOAA7h2ria3ai2Dl9zc");
-        conn.setRequestProperty("Content-Type", "application/json");
-        conn.setRequestMethod("GET");
-        conn.connect();
-
-        int respCode = conn.getResponseCode();
-        System.out.println(respCode);
-
-        if (respCode != 200) {
-            throw new RuntimeException("Http Response Code- " + respCode);
-        } else {
-            StringBuilder sb = new StringBuilder();
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            Scanner scanner = new Scanner(br);
-            while (scanner.hasNext()) sb.append(scanner.nextLine());
-            return sb.toString();
-        }
-    }
-
     private List<School> mapSchoolsFromJSON(String jsonString) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(jsonString, new TypeReference<>() {
@@ -95,11 +79,25 @@ public final class CFB_API {
         return mapper.readValue(jsonString, Fixture[].class);
     }
 
-    public List<Fixture[]> getWeeks() {
-        return List.copyOf(weeks);
-    }
+    private String getJSON(String s) throws IOException {
+        URL url = new URL(s);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-    public List<School> getSchools() {
-        return List.copyOf(schools);
+        conn.setRequestProperty("Authorization", "Bearer " + "gLQdG5n7YtiTjzu/bxxxd+rdzzrhWftHTtIH7PAGVWlAQMOAA7h2ria3ai2Dl9zc");
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestMethod("GET");
+        conn.connect();
+
+        int respCode = conn.getResponseCode();
+
+        if (respCode != 200) {
+            throw new RuntimeException("Http Response Code- " + respCode);
+        } else {
+            StringBuilder sb = new StringBuilder();
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            Scanner scanner = new Scanner(br);
+            while (scanner.hasNext()) sb.append(scanner.nextLine());
+            return sb.toString();
+        }
     }
 }

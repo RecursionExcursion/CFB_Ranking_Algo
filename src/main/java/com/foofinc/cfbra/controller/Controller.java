@@ -1,39 +1,53 @@
 package com.foofinc.cfbra.controller;
 
-import com.foofinc.cfbra.api.CFB_API;
+import com.foofinc.cfbra.api.CfbApiAccess;
 import com.foofinc.cfbra.entity.CompleteTeam;
 import com.foofinc.cfbra.entity.RankingAlgo;
 import com.foofinc.cfbra.json.CompleteTeamMapper;
+import com.foofinc.cfbra.json.SchoolAndFixturesDS;
 import com.foofinc.cfbra.json.Teams;
 import com.foofinc.cfbra.json.jsondatastructures.Fixture;
 import com.foofinc.cfbra.json.jsondatastructures.School;
 import com.foofinc.cfbra.json.jsondatastructures.Team;
+import com.foofinc.cfbra.persistence.MemoryManager;
 
 import java.util.*;
 
 public class Controller {
 
     //API to access CFB JSON
-    private final CFB_API cfbApi;
+    private CfbApiAccess cfbApi;
 
     //Rudimentary DS to hold School(Jackson DS) and List<Fixture(Jackson DS)>
-    private final Map<School, List<Fixture>> schoolMap;
+    private SchoolAndFixturesDS schoolMap;
 
     //List<CompletedSchools> wrapped in class
     private final Teams teams;
 
     //DS holding weeks worth of Fixtures(Jackson DS). (Ex. Week 1, Week 2, etc...)
-    //TODO Smell? Should 'weeks' being in its own wrapper class?
     private List<List<Fixture>> weeks;
 
 
     public Controller() {
-        cfbApi = new CFB_API();
-        schoolMap = new HashMap<>();
-        teams = Teams.getInstance();
-        weeks = new ArrayList<>();
 
-        mapAPIDataToCompletedSchools();
+        //TODO Refactor
+
+        teams = Teams.getInstance();
+
+        MemoryManager memoryManager = new MemoryManager();
+        Map<School, List<Fixture>> schoolMapFromMemory = memoryManager.loadSchools();
+
+        if (schoolMapFromMemory == null) {
+            cfbApi = new CfbApiAccess();
+            schoolMap = new SchoolAndFixturesDS();
+            weeks = new ArrayList<>();
+            mapAPIDataToCompletedSchools();
+
+            memoryManager.saveSchools(schoolMap);
+        } else {
+            schoolMap = new SchoolAndFixturesDS(schoolMapFromMemory);
+        }
+        completeSchools();
 
         RankingAlgo rankingAlgo = initializeRA();
         System.out.println(rankingAlgo);
@@ -44,7 +58,6 @@ public class Controller {
         mapSchoolsFromAPIToMap();
         getFixtures();
         parseGames();
-        completeSchools();
     }
 
     private void mapSchoolsFromAPIToMap() {
