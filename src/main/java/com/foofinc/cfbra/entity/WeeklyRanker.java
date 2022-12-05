@@ -1,7 +1,7 @@
 package com.foofinc.cfbra.entity;
 
-import com.foofinc.cfbra.json.jsondatastructures.Fixture;
-import com.foofinc.cfbra.json.jsondatastructures.School;
+import com.foofinc.cfbra.api.jsondatastructures.Fixture;
+import com.foofinc.cfbra.api.jsondatastructures.School;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,16 +10,16 @@ import java.util.Map;
 public class WeeklyRanker {
 
     private final Map<School, List<Fixture>> schoolMap;
-    private final List<CompleteTeam> completeTeamList;
+    private final List<StatisticizedTeam> statisticizedTeamList;
 
     public WeeklyRanker(Map<School, List<Fixture>> schoolMap) {
         this.schoolMap = schoolMap;
-        completeTeamList = new ArrayList<>();
+        statisticizedTeamList = new ArrayList<>();
     }
 
     private void convertToCompleteTeams() {
         schoolMap.keySet().forEach(school -> {
-            completeTeamList.add(new CompleteTeam(school.getSchool()));
+            statisticizedTeamList.add(new StatisticizedTeam(school.getSchool()));
         });
     }
 }

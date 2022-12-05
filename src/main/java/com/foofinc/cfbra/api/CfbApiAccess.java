@@ -3,8 +3,8 @@ package com.foofinc.cfbra.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.foofinc.cfbra.json.jsondatastructures.Fixture;
-import com.foofinc.cfbra.json.jsondatastructures.School;
+import com.foofinc.cfbra.api.jsondatastructures.Fixture;
+import com.foofinc.cfbra.api.jsondatastructures.School;
 
 import java.io.BufferedReader;
 import java.io.IOException;

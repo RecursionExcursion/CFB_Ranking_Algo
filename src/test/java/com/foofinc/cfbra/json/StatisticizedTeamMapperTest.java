@@ -1,10 +1,11 @@
 package com.foofinc.cfbra.json;
 
-import com.foofinc.cfbra.entity.CompleteTeam;
-import com.foofinc.cfbra.json.jsondatastructures.Fixture;
-import com.foofinc.cfbra.json.jsondatastructures.School;
-import com.foofinc.cfbra.json.jsondatastructures.Stats;
-import com.foofinc.cfbra.json.jsondatastructures.Team;
+import com.foofinc.cfbra.entity.StatisticizedTeam;
+import com.foofinc.cfbra.entity.CompleteTeamMapper;
+import com.foofinc.cfbra.api.jsondatastructures.Fixture;
+import com.foofinc.cfbra.api.jsondatastructures.School;
+import com.foofinc.cfbra.api.jsondatastructures.Stats;
+import com.foofinc.cfbra.api.jsondatastructures.Team;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -14,11 +15,11 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class CompleteTeamMapperTest {
+class StatisticizedTeamMapperTest {
 
     private CompleteTeamMapper mapper;
 
-    public CompleteTeamMapperTest() {
+    public StatisticizedTeamMapperTest() {
         Map<School, List<Fixture>> testMap =new HashMap<>();
 
         Team[] teams = {new Team("Oregon",28,new Stats[]{new Stats("totalYards","400")}),
@@ -39,13 +40,13 @@ class CompleteTeamMapperTest {
 
     @Test
     void getCompleteTeam() {
-        CompleteTeam completeTeamTest = mapper.getCompleteTeam();
+        StatisticizedTeam statisticizedTeamTest = mapper.getCompleteTeam();
 
-        assertEquals(completeTeamTest.getName(),"Oregon");
-        assertEquals(completeTeamTest.getWins(),1);
-        assertEquals(completeTeamTest.getPointsFor(),28);
-        assertEquals(completeTeamTest.getPointsAllowed(),21);
-        assertEquals(completeTeamTest.getTotalOffense(),400);
-        assertEquals(completeTeamTest.getTotalDefense(),300);
+        assertEquals(statisticizedTeamTest.getName(), "Oregon");
+        assertEquals(statisticizedTeamTest.getWins(), 1);
+        assertEquals(statisticizedTeamTest.getPointsFor(), 28);
+        assertEquals(statisticizedTeamTest.getPointsAllowed(), 21);
+        assertEquals(statisticizedTeamTest.getTotalOffense(), 400);
+        assertEquals(statisticizedTeamTest.getTotalDefense(), 300);
     }
 }

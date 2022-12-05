@@ -1,8 +1,8 @@
 package com.foofinc.cfbra.persistence;
 
 import com.foofinc.cfbra.util.TestUtil;
-import com.foofinc.cfbra.json.jsondatastructures.Fixture;
-import com.foofinc.cfbra.json.jsondatastructures.School;
+import com.foofinc.cfbra.api.jsondatastructures.Fixture;
+import com.foofinc.cfbra.api.jsondatastructures.School;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

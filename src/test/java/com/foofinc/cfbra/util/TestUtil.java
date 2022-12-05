@@ -1,9 +1,9 @@
 package com.foofinc.cfbra.util;
 
-import com.foofinc.cfbra.json.jsondatastructures.Fixture;
-import com.foofinc.cfbra.json.jsondatastructures.School;
-import com.foofinc.cfbra.json.jsondatastructures.Stats;
-import com.foofinc.cfbra.json.jsondatastructures.Team;
+import com.foofinc.cfbra.api.jsondatastructures.Fixture;
+import com.foofinc.cfbra.api.jsondatastructures.School;
+import com.foofinc.cfbra.api.jsondatastructures.Stats;
+import com.foofinc.cfbra.api.jsondatastructures.Team;
 
 import java.util.ArrayList;
 import java.util.HashMap;

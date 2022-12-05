@@ -1,13 +1,12 @@
 package com.foofinc.cfbra.entity;
 
-import com.foofinc.cfbra.json.Teams;
-import com.foofinc.cfbra.json.jsondatastructures.Fixture;
+import com.foofinc.cfbra.api.jsondatastructures.Fixture;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class CompleteTeam {
+public class StatisticizedTeam {
 
     private String name;
     private int rank;
@@ -26,7 +25,7 @@ public class CompleteTeam {
 
     //TODO Add conference stats????
 
-    public CompleteTeam(String name) {
+    public StatisticizedTeam(String name) {
         this.name = name;
         rank = 0;
         record = new Record();
@@ -131,25 +130,25 @@ public class CompleteTeam {
     private int calculateStrOfSched() {
         int schedStr = 0;
 
-        List<CompleteTeam> allTeams = Teams.getInstance().getCompleteTeams();
+        List<StatisticizedTeam> allTeams = Teams.getInstance().getCompleteTeams();
 
         for (Fixture fix : schedule.games) {
 
-            CompleteTeam opponent = null;
+            StatisticizedTeam opponent = null;
 
             String team0Name = fix.getTeams()[0].getSchool();
             String team1Name = fix.getTeams()[1].getSchool();
 
 
             if (team0Name.equals(this.name)) {
-                for (CompleteTeam ct : allTeams) {
+                for (StatisticizedTeam ct : allTeams) {
                     if (ct.name.equals(team1Name)) {
                         opponent = ct;
                         break;
                     }
                 }
             } else {
-                for (CompleteTeam ct : allTeams) {
+                for (StatisticizedTeam ct : allTeams) {
                     if (ct.name.equals(team0Name)) {
                         opponent = ct;
                         break;
@@ -157,8 +156,8 @@ public class CompleteTeam {
                 }
             }
 
-            Optional<CompleteTeam> optionalOpponents =
-                    Optional.of(Optional.ofNullable(opponent).orElseGet(() -> new CompleteTeam("Null Team")));
+            Optional<StatisticizedTeam> optionalOpponents =
+                    Optional.of(Optional.ofNullable(opponent).orElseGet(() -> new StatisticizedTeam("Null Team")));
             opponent = optionalOpponents.get();
             schedStr += opponent.getWins();
 

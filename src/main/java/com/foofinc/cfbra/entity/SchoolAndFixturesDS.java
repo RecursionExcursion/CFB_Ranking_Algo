@@ -1,7 +1,7 @@
-package com.foofinc.cfbra.json;
+package com.foofinc.cfbra.entity;
 
-import com.foofinc.cfbra.json.jsondatastructures.Fixture;
-import com.foofinc.cfbra.json.jsondatastructures.School;
+import com.foofinc.cfbra.api.jsondatastructures.Fixture;
+import com.foofinc.cfbra.api.jsondatastructures.School;
 
 import java.util.*;
 

@@ -1,6 +1,4 @@
-package com.foofinc.cfbra.json;
-
-import com.foofinc.cfbra.entity.CompleteTeam;
+package com.foofinc.cfbra.entity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,22 +7,22 @@ import java.util.List;
 public class Teams {
 
     private final static Teams instance = new Teams();
-    private final List<CompleteTeam> completeTeams;
+    private final List<StatisticizedTeam> statisticizedTeams;
 
     private Teams() {
-        this.completeTeams = new ArrayList<>();
+        this.statisticizedTeams = new ArrayList<>();
     }
 
     public static Teams getInstance() {
         return instance;
     }
 
-    public List<CompleteTeam> getCompleteTeams() {
-        return completeTeams;
+    public List<StatisticizedTeam> getCompleteTeams() {
+        return statisticizedTeams;
     }
 
     @Override
     public String toString() {
-        return completeTeams.toString();
+        return statisticizedTeams.toString();
     }
 }

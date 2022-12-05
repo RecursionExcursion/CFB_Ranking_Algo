@@ -1,4 +1,4 @@
-package com.foofinc.cfbra.json.jsondatastructures;
+package com.foofinc.cfbra.api.jsondatastructures;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

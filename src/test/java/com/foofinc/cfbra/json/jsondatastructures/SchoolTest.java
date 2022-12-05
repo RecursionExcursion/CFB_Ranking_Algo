@@ -1,5 +1,6 @@
 package com.foofinc.cfbra.json.jsondatastructures;
 
+import com.foofinc.cfbra.api.jsondatastructures.School;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

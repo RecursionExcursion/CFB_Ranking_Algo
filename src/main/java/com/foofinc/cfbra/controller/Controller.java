@@ -1,17 +1,18 @@
 package com.foofinc.cfbra.controller;
 
 import com.foofinc.cfbra.api.CfbApiAccess;
-import com.foofinc.cfbra.entity.CompleteTeam;
+import com.foofinc.cfbra.api.jsondatastructures.Fixture;
+import com.foofinc.cfbra.api.jsondatastructures.School;
+import com.foofinc.cfbra.api.jsondatastructures.Team;
+import com.foofinc.cfbra.entity.CompleteTeamMapper;
 import com.foofinc.cfbra.entity.RankingAlgo;
-import com.foofinc.cfbra.json.CompleteTeamMapper;
-import com.foofinc.cfbra.json.SchoolAndFixturesDS;
-import com.foofinc.cfbra.json.Teams;
-import com.foofinc.cfbra.json.jsondatastructures.Fixture;
-import com.foofinc.cfbra.json.jsondatastructures.School;
-import com.foofinc.cfbra.json.jsondatastructures.Team;
+import com.foofinc.cfbra.entity.SchoolAndFixturesDS;
+import com.foofinc.cfbra.entity.Teams;
 import com.foofinc.cfbra.persistence.MemoryManager;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class Controller {
 
@@ -65,7 +66,8 @@ public class Controller {
     }
 
     private void getFixtures() {
-        weeks = cfbApi.getWeeks().stream()
+        weeks = cfbApi.getWeeks()
+                      .stream()
                       .map(List::of)
                       .toList();
     }
@@ -94,10 +96,7 @@ public class Controller {
     }
 
     private RankingAlgo initializeRA() {
-        RankingAlgo rankingAlgo = new RankingAlgo();
-        for (CompleteTeam team : teams.getCompleteTeams()) {
-            rankingAlgo.addTeam(team);
-        }
+        RankingAlgo rankingAlgo = new RankingAlgo(teams.getCompleteTeams());
         rankingAlgo.rankTeams();
         return rankingAlgo;
     }

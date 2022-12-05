@@ -1,10 +1,9 @@
-package com.foofinc.cfbra.json;
+package com.foofinc.cfbra.entity;
 
-import com.foofinc.cfbra.entity.CompleteTeam;
-import com.foofinc.cfbra.json.jsondatastructures.Fixture;
-import com.foofinc.cfbra.json.jsondatastructures.School;
-import com.foofinc.cfbra.json.jsondatastructures.Stats;
-import com.foofinc.cfbra.json.jsondatastructures.Team;
+import com.foofinc.cfbra.api.jsondatastructures.Fixture;
+import com.foofinc.cfbra.api.jsondatastructures.School;
+import com.foofinc.cfbra.api.jsondatastructures.Stats;
+import com.foofinc.cfbra.api.jsondatastructures.Team;
 
 import java.util.List;
 import java.util.Map;
@@ -12,12 +11,12 @@ import java.util.Map;
 public class CompleteTeamMapper {
 
     private final Map.Entry<School, List<Fixture>> entry;
-    private final CompleteTeam completeTeam;
+    private final StatisticizedTeam statisticizedTeam;
 
 
     public CompleteTeamMapper(Map.Entry<School, List<Fixture>> entry) {
         this.entry = entry;
-        completeTeam = new CompleteTeam(this.entry.getKey().getSchool());
+        statisticizedTeam = new StatisticizedTeam(this.entry.getKey().getSchool());
         getStatsFromGames();
     }
 
@@ -41,17 +40,17 @@ public class CompleteTeamMapper {
 
             assert totalOffYards != null;
             assert totalDefYards != null;
-            completeTeam.addToTotalOffense(Integer.parseInt(totalOffYards));
-            completeTeam.addToTotalDefense(Integer.parseInt(totalDefYards));
-            completeTeam.addToPointsFor(thisTeamPF);
-            completeTeam.addToPointsAllowed(thisTeamPA);
+            statisticizedTeam.addToTotalOffense(Integer.parseInt(totalOffYards));
+            statisticizedTeam.addToTotalDefense(Integer.parseInt(totalDefYards));
+            statisticizedTeam.addToPointsFor(thisTeamPF);
+            statisticizedTeam.addToPointsAllowed(thisTeamPA);
 
             if (thisTeamPF > thisTeamPA) {
-                completeTeam.addWin();
+                statisticizedTeam.addWin();
             } else {
-                completeTeam.addLoss();
+                statisticizedTeam.addLoss();
             }
-            completeTeam.addFixture(fix);
+            statisticizedTeam.addFixture(fix);
         }
     }
 
@@ -66,7 +65,7 @@ public class CompleteTeamMapper {
         return totalOffYards;
     }
 
-    public CompleteTeam getCompleteTeam() {
-        return completeTeam;
+    public StatisticizedTeam getCompleteTeam() {
+        return statisticizedTeam;
     }
 }
