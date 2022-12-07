@@ -75,6 +75,9 @@ public class RankingAlgo {
     private void getWeightOfRankings(List<StatisticizedTeam> rankedTeams, String methodName) {
 
         int multiplier = Objects.equals(methodName, getWinsString) ? 10 : 1;
+        multiplier = Objects.equals(methodName, getPointsForString) ? 5 : multiplier;
+        multiplier = Objects.equals(methodName, getPointsAllowedString) ? 5 : multiplier;
+        multiplier = Objects.equals(methodName, getStrengthOfScheduleString) ? 3 : multiplier;
 
         try {
             //Placeholder for previous team
