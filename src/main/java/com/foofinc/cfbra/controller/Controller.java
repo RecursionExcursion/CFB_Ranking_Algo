@@ -38,13 +38,8 @@ public class Controller {
         MemoryManager memoryManager = new MemoryManager();
         Map<School, List<Fixture>> schoolMapFromMemory = memoryManager.loadSchools();
 
-        if (schoolMapFromMemory == null) {
-            cfbApi = new CfbApiAccess();
-            schoolMap = new SchoolAndFixturesDS();
-            weeks = new ArrayList<>();
-            mapAPIDataToCompletedSchools();
-
-            memoryManager.saveSchools(schoolMap);
+        if (schoolMapFromMemory.size() == 0) {
+            saveSchoolsFromAPIToLocalMemory(memoryManager);
         } else {
             schoolMap = new SchoolAndFixturesDS(schoolMapFromMemory);
         }
@@ -52,6 +47,14 @@ public class Controller {
 
         RankingAlgo rankingAlgo = initializeRA();
         System.out.println(rankingAlgo);
+    }
+
+    private void saveSchoolsFromAPIToLocalMemory(MemoryManager memoryManager) {
+        cfbApi = new CfbApiAccess();
+        schoolMap = new SchoolAndFixturesDS();
+        weeks = new ArrayList<>();
+        mapAPIDataToCompletedSchools();
+        memoryManager.saveSchools(schoolMap);
     }
 
 
