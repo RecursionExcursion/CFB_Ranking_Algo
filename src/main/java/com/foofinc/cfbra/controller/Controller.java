@@ -48,7 +48,8 @@ public class Controller {
     }
 
     public static Controller getInstance() {
-        return instance == null ? new Controller() : instance;
+        if (instance == null) instance = new Controller();
+        return instance;
     }
 
     public void RankAndPrint() {
