@@ -16,6 +16,8 @@ import java.util.Map;
 
 public class Controller {
 
+    private static Controller instance;
+
     //API to access CFB JSON
     private CfbApiAccess cfbApi;
 
@@ -29,22 +31,27 @@ public class Controller {
     private List<List<Fixture>> weeks;
 
 
-    public Controller() {
+    private Controller() {
 
         //TODO Refactor
 
         teams = Teams.getInstance();
 
         MemoryManager memoryManager = new MemoryManager();
-        Map<School, List<Fixture>> schoolMapFromMemory = memoryManager.loadSchools();
-
-        if (schoolMapFromMemory.size() == 0) {
-            saveSchoolsFromAPIToLocalMemory(memoryManager);
+        if (memoryManager.fileExists()) {
+            schoolMap = memoryManager.loadSchools();
         } else {
-            schoolMap = new SchoolAndFixturesDS(schoolMapFromMemory);
+            saveSchoolsFromAPIToLocalMemory(memoryManager);
         }
         completeSchools();
 
+    }
+
+    public static Controller getInstance() {
+        return instance == null ? new Controller() : instance;
+    }
+
+    public void RankAndPrint() {
         RankingAlgo rankingAlgo = initializeRA();
         System.out.println(rankingAlgo);
     }

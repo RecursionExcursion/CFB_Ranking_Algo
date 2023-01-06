@@ -1,5 +1,6 @@
 package com.foofinc.cfbra.persistence;
 
+import com.foofinc.cfbra.entity.SchoolAndFixturesDS;
 import com.foofinc.cfbra.util.TestUtil;
 import com.foofinc.cfbra.api.jsondatastructures.Fixture;
 import com.foofinc.cfbra.api.jsondatastructures.School;
@@ -18,12 +19,13 @@ class MemoryManagerTest {
 
         Map<School, List<Fixture>> testMap = TestUtil.createTestMap();
 
-        memoryManager.saveSchools(testMap);
+        SchoolAndFixturesDS sfDS = new SchoolAndFixturesDS(testMap);
+
+        memoryManager.saveSchools(sfDS);
     }
 
     @Test
     void loadSchoolsTest() {
-
         MemoryManager memoryManager = new MemoryManager();
         memoryManager.loadSchools();
     }

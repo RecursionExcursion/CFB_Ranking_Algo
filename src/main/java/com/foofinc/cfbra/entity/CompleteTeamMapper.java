@@ -27,23 +27,16 @@ public class CompleteTeamMapper {
             Team thisTeam = is0thTeam ? fix.getTeams()[0] : fix.getTeams()[1];
             Team opposingTeam = !is0thTeam ? fix.getTeams()[0] : fix.getTeams()[1];
 
-
-            String totalDefYards = String.valueOf(Integer.MIN_VALUE);
-            String totalOffYards = String.valueOf(Integer.MIN_VALUE);
-
-            totalDefYards = getTotalYards(opposingTeam, totalDefYards);
-            totalOffYards = getTotalYards(thisTeam, totalOffYards);
-
+            String totalDefYards = getTotalYards(opposingTeam);
+            String totalOffYards = getTotalYards(thisTeam);
 
             int thisTeamPF = thisTeam.getPoints();
             int thisTeamPA = opposingTeam.getPoints();
 
-            assert totalOffYards != null;
-            assert totalDefYards != null;
             statisticizedTeam.addToTotalOffense(Integer.parseInt(totalOffYards));
             statisticizedTeam.addToTotalDefense(Integer.parseInt(totalDefYards));
-            statisticizedTeam.addToPointsFor(thisTeamPF);
-            statisticizedTeam.addToPointsAllowed(thisTeamPA);
+            statisticizedTeam.addToPointsFor(thisTeam.getPoints());
+            statisticizedTeam.addToPointsAllowed(opposingTeam.getPoints());
 
             if (thisTeamPF > thisTeamPA) {
                 statisticizedTeam.addWin();
@@ -54,15 +47,15 @@ public class CompleteTeamMapper {
         }
     }
 
-    private String getTotalYards(Team thisTeam, String totalOffYards) {
+    private String getTotalYards(Team thisTeam) {
         for (int i = thisTeam.getStats().length - 1; i >= 0; i--) {
             Stats stat = thisTeam.getStats()[i];
             if (stat.getCategory().equals("totalYards")) {
-                totalOffYards = stat.getStat();
-                break;
+                return stat.getStat();
             }
         }
-        return totalOffYards;
+        //Return Min.Value to point to show error in stats
+        return String.valueOf(Integer.MIN_VALUE);
     }
 
     public StatisticizedTeam getCompleteTeam() {

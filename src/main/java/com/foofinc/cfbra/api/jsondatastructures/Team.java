@@ -2,6 +2,7 @@ package com.foofinc.cfbra.api.jsondatastructures;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 /*
@@ -12,7 +13,7 @@ Arg constructor for testing
  */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Team {
+public class Team implements Serializable {
     private String school;
     private int points;
     private Stats[] stats;

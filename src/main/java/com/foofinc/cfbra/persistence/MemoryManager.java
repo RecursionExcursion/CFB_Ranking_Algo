@@ -1,47 +1,48 @@
 package com.foofinc.cfbra.persistence;
 
-import com.foofinc.cfbra.api.jsondatastructures.Fixture;
-import com.foofinc.cfbra.api.jsondatastructures.School;
+import com.foofinc.cfbra.entity.SchoolAndFixturesDS;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
 
 public class MemoryManager {
 
-    private String filePath = "src/main/java/com/foofinc/cfbra/persistence/fbs_data";
-    private List<String> dataIn;
-    private List<String> dataOut;
-
+    private final File filePath = new File("src/main/java/com/foofinc/cfbra/persistence/fbs_data/team_data.ser");
 
     public MemoryManager() {
-        this.dataIn = new ArrayList<>();
-        this.dataOut = new ArrayList<>();
     }
 
     //For Testing
     public MemoryManager(String filePath) {
         this();
-        this.filePath = filePath;
     }
 
-    public Map<School, List<Fixture>> loadSchools() {
-        Map<School, List<Fixture>> map = new HashMap<>();
-        Map.Entry<School, List<Fixture>> entry;
-
-        dataIn = FileScribe.readFromFile(filePath);
-        for (String s : dataIn) {
-            entry = SchoolStringMapper.mapStringToSchoolEntry(s);
-            map.put(entry.getKey(), entry.getValue());
-        }
-        return map;
+    public SchoolAndFixturesDS loadSchools() {
+        return deserialize(filePath);
     }
 
-    public void saveSchools(Map<School, List<Fixture>> schools) {
-        for (Map.Entry<School, List<Fixture>> entry : schools.entrySet()) {
-            dataOut.add(SchoolStringMapper.mapSchoolEntryToString(entry));
+    public void saveSchools(SchoolAndFixturesDS sfDS) {
+        serialize(sfDS, filePath);
+    }
+
+    private void serialize(SchoolAndFixturesDS sfDS, File file) {
+        try (FileOutputStream fileOut = new FileOutputStream(file);
+             ObjectOutputStream out = new ObjectOutputStream(fileOut)) {
+            out.writeObject(sfDS);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        FileScribe.writeToFile(filePath, dataOut);
+    }
+
+    private SchoolAndFixturesDS deserialize(File file) {
+        try (FileInputStream fileIn = new FileInputStream(file);
+             ObjectInputStream in = new ObjectInputStream(fileIn)) {
+            return (SchoolAndFixturesDS) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean fileExists() {
+        return filePath.exists();
     }
 }

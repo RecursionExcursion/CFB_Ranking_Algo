@@ -2,6 +2,7 @@ package com.foofinc.cfbra.api.jsondatastructures;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 /*
@@ -12,7 +13,7 @@ Arg constructor for testing
  */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Fixture {
+public class Fixture implements Serializable {
     private Team[] teams;
 
     public Fixture(Team[] teams) {

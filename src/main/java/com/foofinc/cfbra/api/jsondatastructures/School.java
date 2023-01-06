@@ -2,6 +2,8 @@ package com.foofinc.cfbra.api.jsondatastructures;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.io.Serializable;
+
 /*
 This class is a Data Structure used to hold data from Jackson's objectmapper object.
 POJO to map from all schools JSON
@@ -10,7 +12,7 @@ Arg constructor for testing
  */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class School {
+public class School implements Serializable {
     private String school;
     private String mascot;
     private String abbreviation;
