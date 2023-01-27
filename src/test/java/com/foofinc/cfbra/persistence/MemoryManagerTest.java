@@ -1,6 +1,6 @@
 package com.foofinc.cfbra.persistence;
 
-import com.foofinc.cfbra.entity.model.Schools;
+import com.foofinc.cfbra.entity.model.SchoolList;
 import com.foofinc.cfbra.util.TestUtil;
 import org.junit.jupiter.api.Test;
 
@@ -16,9 +16,9 @@ class MemoryManagerTest {
 //
 //        SchoolAndFixturesDS sfDS = new SchoolAndFixturesDS(testMap);
 
-        Schools schools = Schools.INSTANCE;
+        SchoolList schoolList = SchoolList.INSTANCE;
 
-        memoryManager.saveSchools(schools);
+        memoryManager.saveSchools(schoolList.getSchools());
     }
 
     @Test

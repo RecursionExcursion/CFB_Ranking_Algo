@@ -8,7 +8,7 @@ import com.foofinc.cfbra.entity.SchoolAndFixturesDS;
 import com.foofinc.cfbra.entity.Teams;
 import com.foofinc.cfbra.entity.model.ModelGenerator;
 import com.foofinc.cfbra.entity.model.School;
-import com.foofinc.cfbra.entity.model.Schools;
+import com.foofinc.cfbra.entity.model.SchoolList;
 import com.foofinc.cfbra.persistence.MemoryManager;
 
 import java.util.ArrayList;
@@ -31,24 +31,22 @@ public class Controller {
     private List<List<FixtureDto>> weeks;
 
     //List<Schools> wrapped in class
-    private Schools schools;
+    private SchoolList schoolList;
 
 
     private Controller() {
 
         //TODO Refactor
 
-        schools = Schools.INSTANCE;
+        schoolList = SchoolList.INSTANCE;
         teams = Teams.getInstance();
 
         MemoryManager memoryManager = new MemoryManager();
         if (memoryManager.fileExists()) {
-            List<School> temp = memoryManager.loadSchools().getSchools();
-            schools = memoryManager.loadSchools();
+            schoolList.loadSchools(memoryManager.loadSchools());
         } else {
             saveSchoolsFromAPIToLocalMemory(memoryManager);
         }
-        List<School> testSchools = Schools.INSTANCE.getSchools();
         completeSchools();
     }
 
@@ -65,18 +63,18 @@ public class Controller {
     private void saveSchoolsFromAPIToLocalMemory(MemoryManager memoryManager) {
         cfbApi = new CfbApiAccess();
 //        schoolMap = new SchoolAndFixturesDS();
-        schools = Schools.INSTANCE;
+        schoolList = SchoolList.INSTANCE;
         weeks = new ArrayList<>();
 
         mapAPIDataToCompletedSchools();
-        memoryManager.saveSchools(schools);
+        memoryManager.saveSchools(schoolList.getSchools());
     }
 
 
     private void mapAPIDataToCompletedSchools() {
         mapSchoolsFromAPIToWrapperList();
         getFixtures();
-        List<School> test = Schools.INSTANCE.getSchools();
+        List<School> test = SchoolList.INSTANCE.getSchools();
         parseGames();
     }
 
@@ -84,7 +82,7 @@ public class Controller {
         cfbApi.getSchools()
               .stream()
               .map(ModelGenerator::generateSchool)
-              .forEach(school -> schools.addSchool(school));
+              .forEach(school -> schoolList.addSchool(school));
 
     }
 
@@ -117,7 +115,7 @@ public class Controller {
     }
 
     private void completeSchools() {
-        for (School s : schools.getSchools()) {
+        for (School s : schoolList.getSchools()) {
             teams.getCompleteTeams()
                  .add(new CompleteTeamMapper(s).getCompleteTeam());
         }

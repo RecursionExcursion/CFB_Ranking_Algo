@@ -1,8 +1,9 @@
 package com.foofinc.cfbra.persistence;
 
-import com.foofinc.cfbra.entity.model.Schools;
+import com.foofinc.cfbra.entity.model.School;
 
 import java.io.*;
+import java.util.List;
 
 public class MemoryManager {
 
@@ -16,15 +17,15 @@ public class MemoryManager {
         this();
     }
 
-    public Schools loadSchools() {
+    public List<School> loadSchools() {
         return deserialize(filePath);
     }
 
-    public void saveSchools(Schools schools) {
+    public void saveSchools(List<School> schools) {
         serialize(schools, filePath);
     }
 
-    private void serialize(Schools schools, File file) {
+    private void serialize(List<School> schools, File file) {
         try (FileOutputStream fileOut = new FileOutputStream(file);
              ObjectOutputStream out = new ObjectOutputStream(fileOut)) {
             out.writeObject(schools);
@@ -33,10 +34,10 @@ public class MemoryManager {
         }
     }
 
-    private Schools deserialize(File file) {
+    private List<School> deserialize(File file) {
         try (FileInputStream fileIn = new FileInputStream(file);
              ObjectInputStream in = new ObjectInputStream(fileIn)) {
-            return (Schools) in.readObject();
+            return (List<School>) in.readObject();
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
