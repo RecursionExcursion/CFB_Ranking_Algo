@@ -86,6 +86,8 @@ public class RankingAlgo {
             for (int i = 0, rankWeight = 1; i < rankedTeams.size(); i++) {
                 //Team getting weighted
                 StatisticizedTeam indexedTeam = rankedTeams.get(i);
+
+                //Skips first team being weighted since there's nothing to compare to.
                 if (lastTeam != null) {
 
                     //Get method signature from String param

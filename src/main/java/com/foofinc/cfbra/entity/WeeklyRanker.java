@@ -1,7 +1,7 @@
 package com.foofinc.cfbra.entity;
 
-import com.foofinc.cfbra.api.jsondatastructures.Fixture;
-import com.foofinc.cfbra.api.jsondatastructures.School;
+import com.foofinc.cfbra.api.dto.FixtureDto;
+import com.foofinc.cfbra.api.dto.SchoolDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,10 +9,10 @@ import java.util.Map;
 
 public class WeeklyRanker {
 
-    private final Map<School, List<Fixture>> schoolMap;
+    private final Map<SchoolDto, List<FixtureDto>> schoolMap;
     private final List<StatisticizedTeam> statisticizedTeamList;
 
-    public WeeklyRanker(Map<School, List<Fixture>> schoolMap) {
+    public WeeklyRanker(Map<SchoolDto, List<FixtureDto>> schoolMap) {
         this.schoolMap = schoolMap;
         statisticizedTeamList = new ArrayList<>();
     }

@@ -1,8 +1,7 @@
-package com.foofinc.cfbra.api.jsondatastructures;
+package com.foofinc.cfbra.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import java.io.Serializable;
 import java.util.Arrays;
 
 /*
@@ -13,21 +12,21 @@ Arg constructor for testing
  */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Fixture implements Serializable {
-    private Team[] teams;
+public class FixtureDto {
+    private TeamDto[] teams;
 
-    public Fixture(Team[] teams) {
+    public FixtureDto(TeamDto[] teams) {
         this.teams = teams;
     }
 
-    public Fixture() {
+    public FixtureDto() {
     }
 
-    public Team[] getTeams() {
+    public TeamDto[] getTeams() {
         return teams;
     }
 
-    public void setTeams(Team[] teams) {
+    public void setTeams(TeamDto[] teams) {
         this.teams = teams;
     }
 

@@ -1,36 +1,36 @@
 package com.foofinc.cfbra.entity;
 
-import com.foofinc.cfbra.api.jsondatastructures.Fixture;
-import com.foofinc.cfbra.api.jsondatastructures.School;
+import com.foofinc.cfbra.api.dto.FixtureDto;
+import com.foofinc.cfbra.api.dto.SchoolDto;
 
 import java.io.Serializable;
 import java.util.*;
 
 public class SchoolAndFixturesDS implements Serializable {
 
-    private final Map<School, List<Fixture>> schoolMap;
+    private final Map<SchoolDto, List<FixtureDto>> schoolMap;
 
     public SchoolAndFixturesDS() {
         this.schoolMap = new HashMap<>();
     }
 
-    public SchoolAndFixturesDS(Map<School, List<Fixture>> schoolMap) {
+    public SchoolAndFixturesDS(Map<SchoolDto, List<FixtureDto>> schoolMap) {
         this.schoolMap = schoolMap;
     }
 
-    public List<Fixture> get(Object key) {
+    public List<FixtureDto> get(Object key) {
         return schoolMap.get(key);
     }
 
-    public void putIfAbsent(School key, List<Fixture> value) {
+    public void putIfAbsent(SchoolDto key, List<FixtureDto> value) {
         schoolMap.putIfAbsent(key, value);
     }
 
-    public Set<School> keySet() {
+    public Set<SchoolDto> keySet() {
         return schoolMap.keySet();
     }
 
-    public Set<Map.Entry<School, List<Fixture>>> entrySet() {
+    public Set<Map.Entry<SchoolDto, List<FixtureDto>>> entrySet() {
         return schoolMap.entrySet();
     }
 }

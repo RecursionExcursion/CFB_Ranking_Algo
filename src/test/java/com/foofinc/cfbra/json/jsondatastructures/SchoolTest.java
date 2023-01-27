@@ -1,16 +1,16 @@
 package com.foofinc.cfbra.json.jsondatastructures;
 
-import com.foofinc.cfbra.api.jsondatastructures.School;
+import com.foofinc.cfbra.api.dto.SchoolDto;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SchoolTest {
 
-    private final School testSchool;
+    private final SchoolDto testSchool;
 
     public SchoolTest(){
-        testSchool = new School("Miami", "Hurricanes", "UM");
+        testSchool = new SchoolDto("Miami", "Hurricanes", "UM");
     }
 
     @Test

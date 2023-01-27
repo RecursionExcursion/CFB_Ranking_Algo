@@ -1,19 +1,19 @@
 package com.foofinc.cfbra.json.jsondatastructures;
 
-import com.foofinc.cfbra.api.jsondatastructures.Stats;
-import com.foofinc.cfbra.api.jsondatastructures.Team;
+import com.foofinc.cfbra.api.dto.StatsDto;
+import com.foofinc.cfbra.api.dto.TeamDto;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class TeamTest {
+class TeamDtoTest {
 
-    private final Team testTeam;
-    private final Stats[] fooStatsArr;
+    private final TeamDto testTeam;
+    private final StatsDto[] fooStatsArr;
 
-    public TeamTest() {
-        fooStatsArr = new Stats[]{new Stats("Games won", "12")};
-        testTeam = new Team("Alabama", 21, fooStatsArr);
+    public TeamDtoTest() {
+        fooStatsArr = new StatsDto[]{new StatsDto("Games won", "12")};
+        testTeam = new TeamDto("Alabama", 21, fooStatsArr);
     }
 
     @Test
@@ -45,7 +45,7 @@ class TeamTest {
 
     @Test
     void setStats() {
-        Stats[] barStatsArr = new Stats[]{new Stats("Games Lost", "0")};
+        StatsDto[] barStatsArr = new StatsDto[]{new StatsDto("Games Lost", "0")};
         testTeam.setStats(barStatsArr);
         assertEquals(testTeam.getStats(),barStatsArr);
     }

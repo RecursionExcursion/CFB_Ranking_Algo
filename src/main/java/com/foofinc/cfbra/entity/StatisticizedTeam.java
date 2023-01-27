@@ -1,6 +1,6 @@
 package com.foofinc.cfbra.entity;
 
-import com.foofinc.cfbra.api.jsondatastructures.Fixture;
+import com.foofinc.cfbra.entity.model.Game;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,8 +50,8 @@ public class StatisticizedTeam {
         this.record = record;
     }
 
-    public void addFixture(Fixture fixture) {
-        schedule.games.add(fixture);
+    public void addFixture(Game game) {
+        schedule.games.add(game);
     }
 
     public void addToTotalOffense(int offense) {
@@ -132,12 +132,12 @@ public class StatisticizedTeam {
 
         List<StatisticizedTeam> allTeams = Teams.getInstance().getCompleteTeams();
 
-        for (Fixture fix : schedule.games) {
+        for (Game game : schedule.games) {
 
             StatisticizedTeam opponent = null;
 
-            String team0Name = fix.getTeams()[0].getSchool();
-            String team1Name = fix.getTeams()[1].getSchool();
+            String team0Name = game.getHome().getSchoolNameString();
+            String team1Name = game.getAway().getSchoolNameString();
 
 
             if (team0Name.equals(this.name)) {
@@ -179,7 +179,7 @@ public class StatisticizedTeam {
 
     class Schedule {
 
-        List<Fixture> games;
+        List<Game> games;
 
         public Schedule() {
             this.games = new ArrayList<>();

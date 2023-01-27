@@ -1,8 +1,6 @@
-package com.foofinc.cfbra.api.jsondatastructures;
+package com.foofinc.cfbra.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import java.io.Serializable;
 
 /*
 This class is a Data Structure used to hold data from Jackson's objectmapper object.
@@ -12,14 +10,14 @@ Arg constructor for testing
  */
 
 @JsonIgnoreProperties()
-public class Stats implements Serializable {
+public class StatsDto {
     private String category;
     private String stat;
 
-    public Stats() {
+    public StatsDto() {
     }
 
-    public Stats(String category, String stat) {
+    public StatsDto(String category, String stat) {
         this.category = category;
         this.stat = stat;
     }

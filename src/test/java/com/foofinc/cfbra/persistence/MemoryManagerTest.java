@@ -1,13 +1,8 @@
 package com.foofinc.cfbra.persistence;
 
-import com.foofinc.cfbra.entity.SchoolAndFixturesDS;
+import com.foofinc.cfbra.entity.model.Schools;
 import com.foofinc.cfbra.util.TestUtil;
-import com.foofinc.cfbra.api.jsondatastructures.Fixture;
-import com.foofinc.cfbra.api.jsondatastructures.School;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-import java.util.Map;
 
 class MemoryManagerTest {
 
@@ -17,11 +12,13 @@ class MemoryManagerTest {
 
         MemoryManager memoryManager = new MemoryManager(TestUtil.FILEPATH_TEAMS);
 
-        Map<School, List<Fixture>> testMap = TestUtil.createTestMap();
+//        Map<SchoolDto, List<FixtureDto>> testMap = TestUtil.createTestMap();
+//
+//        SchoolAndFixturesDS sfDS = new SchoolAndFixturesDS(testMap);
 
-        SchoolAndFixturesDS sfDS = new SchoolAndFixturesDS(testMap);
+        Schools schools = Schools.INSTANCE;
 
-        memoryManager.saveSchools(sfDS);
+        memoryManager.saveSchools(schools);
     }
 
     @Test

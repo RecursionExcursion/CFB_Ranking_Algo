@@ -1,9 +1,9 @@
 package com.foofinc.cfbra.util;
 
-import com.foofinc.cfbra.api.jsondatastructures.Fixture;
-import com.foofinc.cfbra.api.jsondatastructures.School;
-import com.foofinc.cfbra.api.jsondatastructures.Stats;
-import com.foofinc.cfbra.api.jsondatastructures.Team;
+import com.foofinc.cfbra.api.dto.FixtureDto;
+import com.foofinc.cfbra.api.dto.SchoolDto;
+import com.foofinc.cfbra.api.dto.StatsDto;
+import com.foofinc.cfbra.api.dto.TeamDto;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,40 +17,40 @@ public class TestUtil {
     public static String FILEPATH_TEAMS = "src/test/java/com/foofinc/cfbra/persistence/test_data_teams";
 
 
-    public static Map<School, List<Fixture>> createTestMap() {
-        Map<School, List<Fixture>> testMap = new HashMap<>();
-        List<Fixture> fixtures = new ArrayList<>();
+    public static Map<SchoolDto, List<FixtureDto>> createTestMap() {
+        Map<SchoolDto, List<FixtureDto>> testMap = new HashMap<>();
+        List<FixtureDto> fixtures = new ArrayList<>();
 
 
-        Team[] teams = {new Team("Oregon", 28, new Stats[]{new Stats("totalYards", "400")}),
-                new Team("Oregon State", 21, new Stats[]{new Stats("totalYards", "300")})};
+        TeamDto[] teams = {new TeamDto("Oregon", 28, new StatsDto[]{new StatsDto("totalYards", "400")}),
+                new TeamDto("Oregon State", 21, new StatsDto[]{new StatsDto("totalYards", "300")})};
 
-        Team[] teams2 = {new Team("Oregon", 21, new Stats[]{new Stats("totalYards", "300")}),
-                new Team("Washington State", 31, new Stats[]{new Stats("totalYards", "450")})};
+        TeamDto[] teams2 = {new TeamDto("Oregon", 21, new StatsDto[]{new StatsDto("totalYards", "300")}),
+                new TeamDto("Washington State", 31, new StatsDto[]{new StatsDto("totalYards", "450")})};
 
-        Fixture testFixture = new Fixture(teams);
-        Fixture testFixture2 = new Fixture(teams2);
+        FixtureDto testFixture = new FixtureDto(teams);
+        FixtureDto testFixture2 = new FixtureDto(teams2);
 
         fixtures.add(testFixture);
         fixtures.add(testFixture2);
 
-        testMap.put(new School("Oregon", "Ducks", "UO"), fixtures);
+        testMap.put(new SchoolDto("Oregon", "Ducks", "UO"), fixtures);
 
         return testMap;
     }
 
-    public static Map<School, List<Fixture>> createTestMap_OneFixture() {
-        Map<School, List<Fixture>> testMap = new HashMap<>();
+    public static Map<SchoolDto, List<FixtureDto>> createTestMap_OneFixture() {
+        Map<SchoolDto, List<FixtureDto>> testMap = new HashMap<>();
 
-        Team[] teams = {new Team("Oregon", 28, new Stats[]{new Stats("totalYards", "400")}),
-                new Team("Oregon State", 21, new Stats[]{new Stats("totalYards", "300")})};
+        TeamDto[] teams = {new TeamDto("Oregon", 28, new StatsDto[]{new StatsDto("totalYards", "400")}),
+                new TeamDto("Oregon State", 21, new StatsDto[]{new StatsDto("totalYards", "300")})};
 
-        Fixture testFixture = new Fixture(teams);
+        FixtureDto testFixture = new FixtureDto(teams);
 
-        List<Fixture> fixtures = new ArrayList<>();
+        List<FixtureDto> fixtures = new ArrayList<>();
         fixtures.add(testFixture);
 
-        testMap.put(new School("Oregon", "Ducks", "UO"), fixtures);
+        testMap.put(new SchoolDto("Oregon", "Ducks", "UO"), fixtures);
 
         return testMap;
     }

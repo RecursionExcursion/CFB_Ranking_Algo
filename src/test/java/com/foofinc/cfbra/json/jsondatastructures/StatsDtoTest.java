@@ -1,16 +1,16 @@
 package com.foofinc.cfbra.json.jsondatastructures;
 
-import com.foofinc.cfbra.api.jsondatastructures.Stats;
+import com.foofinc.cfbra.api.dto.StatsDto;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class StatsTest {
+class StatsDtoTest {
 
-    private final Stats testStats;
+    private final StatsDto testStats;
 
-    public StatsTest() {
-        testStats = new Stats("Beers drank", "12 if my team loses");
+    public StatsDtoTest() {
+        testStats = new StatsDto("Beers drank", "12 if my team loses");
     }
 
     @Test

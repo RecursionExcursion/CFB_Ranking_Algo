@@ -1,6 +1,6 @@
 package com.foofinc.cfbra.persistence;
 
-import com.foofinc.cfbra.entity.SchoolAndFixturesDS;
+import com.foofinc.cfbra.entity.model.Schools;
 
 import java.io.*;
 
@@ -16,27 +16,27 @@ public class MemoryManager {
         this();
     }
 
-    public SchoolAndFixturesDS loadSchools() {
+    public Schools loadSchools() {
         return deserialize(filePath);
     }
 
-    public void saveSchools(SchoolAndFixturesDS sfDS) {
-        serialize(sfDS, filePath);
+    public void saveSchools(Schools schools) {
+        serialize(schools, filePath);
     }
 
-    private void serialize(SchoolAndFixturesDS sfDS, File file) {
+    private void serialize(Schools schools, File file) {
         try (FileOutputStream fileOut = new FileOutputStream(file);
              ObjectOutputStream out = new ObjectOutputStream(fileOut)) {
-            out.writeObject(sfDS);
+            out.writeObject(schools);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private SchoolAndFixturesDS deserialize(File file) {
+    private Schools deserialize(File file) {
         try (FileInputStream fileIn = new FileInputStream(file);
              ObjectInputStream in = new ObjectInputStream(fileIn)) {
-            return (SchoolAndFixturesDS) in.readObject();
+            return (Schools) in.readObject();
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

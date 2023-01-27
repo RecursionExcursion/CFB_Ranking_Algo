@@ -1,56 +1,63 @@
 package com.foofinc.cfbra.entity;
 
-import com.foofinc.cfbra.api.jsondatastructures.Fixture;
-import com.foofinc.cfbra.api.jsondatastructures.School;
-import com.foofinc.cfbra.api.jsondatastructures.Stats;
-import com.foofinc.cfbra.api.jsondatastructures.Team;
-
-import java.util.List;
-import java.util.Map;
+import com.foofinc.cfbra.api.dto.StatsDto;
+import com.foofinc.cfbra.api.dto.TeamDto;
+import com.foofinc.cfbra.entity.model.Game;
+import com.foofinc.cfbra.entity.model.School;
 
 public class CompleteTeamMapper {
 
-    private final Map.Entry<School, List<Fixture>> entry;
+    private final School school;
     private final StatisticizedTeam statisticizedTeam;
 
 
-    public CompleteTeamMapper(Map.Entry<School, List<Fixture>> entry) {
-        this.entry = entry;
-        statisticizedTeam = new StatisticizedTeam(this.entry.getKey().getSchool());
+    public CompleteTeamMapper(School school) {
+        this.school = school;
+        statisticizedTeam = new StatisticizedTeam(school.getSchoolNameString());
         getStatsFromGames();
     }
 
     private void getStatsFromGames() {
-        for (Fixture fix : entry.getValue()) {
-            boolean is0thTeam = fix.getTeams()[0].getSchool().equals(entry.getKey().getSchool());
+        for (Game game : school.getSchedule()) {
 
-            Team thisTeam = is0thTeam ? fix.getTeams()[0] : fix.getTeams()[1];
-            Team opposingTeam = !is0thTeam ? fix.getTeams()[0] : fix.getTeams()[1];
+            School thisTeam = game.getHome() == school ? game.getHome() : game.getAway();
+            School opposingTeam = game.getHome() != school ? game.getHome() : game.getAway();
 
-            String totalDefYards = getTotalYards(opposingTeam);
-            String totalOffYards = getTotalYards(thisTeam);
 
-            int thisTeamPF = thisTeam.getPoints();
-            int thisTeamPA = opposingTeam.getPoints();
+            if (game.getHome() == school) {
+                statisticizedTeam.addToTotalOffense(game.getHomeYardsGained());
+                statisticizedTeam.addToTotalDefense(game.getAwayYardsGained());
+                statisticizedTeam.addToPointsFor(game.getHomeScore());
+                statisticizedTeam.addToPointsAllowed(game.getAwayScore());
 
-            statisticizedTeam.addToTotalOffense(Integer.parseInt(totalOffYards));
-            statisticizedTeam.addToTotalDefense(Integer.parseInt(totalDefYards));
-            statisticizedTeam.addToPointsFor(thisTeam.getPoints());
-            statisticizedTeam.addToPointsAllowed(opposingTeam.getPoints());
-
-            if (thisTeamPF > thisTeamPA) {
-                statisticizedTeam.addWin();
+                if (game.getHomeScore() > game.getAwayScore()) {
+                    statisticizedTeam.addWin();
+                } else {
+                    statisticizedTeam.addLoss();
+                }
             } else {
-                statisticizedTeam.addLoss();
+                statisticizedTeam.addToTotalOffense(game.getAwayYardsGained());
+                statisticizedTeam.addToTotalDefense(game.getHomeYardsGained());
+                statisticizedTeam.addToPointsFor(game.getAwayScore());
+                statisticizedTeam.addToPointsAllowed(game.getHomeScore());
+                if (game.getHomeScore() < game.getAwayScore()) {
+                    statisticizedTeam.addWin();
+                } else {
+                    statisticizedTeam.addLoss();
+                }
             }
-            statisticizedTeam.addFixture(fix);
+            statisticizedTeam.addFixture(game);
         }
     }
 
-    private String getTotalYards(Team thisTeam) {
+
+//    }
+
+    private String getTotalYards(TeamDto thisTeam) {
         for (int i = thisTeam.getStats().length - 1; i >= 0; i--) {
-            Stats stat = thisTeam.getStats()[i];
-            if (stat.getCategory().equals("totalYards")) {
+            StatsDto stat = thisTeam.getStats()[i];
+            if (stat.getCategory()
+                    .equals("totalYards")) {
                 return stat.getStat();
             }
         }
