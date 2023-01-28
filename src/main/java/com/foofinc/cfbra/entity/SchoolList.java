@@ -1,4 +1,6 @@
-package com.foofinc.cfbra.entity.model;
+package com.foofinc.cfbra.entity;
+
+import com.foofinc.cfbra.entity.model.School;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +14,7 @@ public enum SchoolList {
 
     INSTANCE;
 
-    private static List<School> schools = new ArrayList<>();
+    private List<School> schools = new ArrayList<>();
 
     public void loadSchools(List<School> s) {
         schools = s;

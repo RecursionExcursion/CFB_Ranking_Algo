@@ -5,27 +5,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class School implements Serializable {
-    private String schoolName;
-    private String mascot;
-    private String abbreviation;
-    private Schedule schedule;
+    private final String schoolName;
+    private final String mascot;
+    private final String abbreviation;
+    private final List<Game> schedule;
 
     public School(String school, String mascot, String abbreviation) {
         this.schoolName = school;
         this.mascot = mascot;
         this.abbreviation = abbreviation;
-        schedule = new Schedule();
+        schedule = new ArrayList<>();
     }
 
     private School(Builder builder) {
         schoolName = builder.school;
         mascot = builder.mascot;
         abbreviation = builder.abbreviation;
-        schedule = builder.schedule == null ? new Schedule() : builder.schedule;
+        schedule = new ArrayList<>();
     }
 
     public void addGameToSchedule(Game game) {
-        schedule.addGame(game);
+        schedule.add(game);
     }
 
     public String getSchoolNameString() {
@@ -41,36 +41,13 @@ public class School implements Serializable {
     }
 
     public List<Game> getSchedule() {
-        return schedule.getGames();
-    }
-
-    class Schedule implements Serializable {
-
-        private final List<Game> games;
-
-        public Schedule() {
-            this.games = new ArrayList<>();
-        }
-
-        public void addGame(Game game) {
-            games.add(game);
-        }
-
-        public List<Game> getGames() {
-            return games;
-        }
-
-        @Override
-        public String toString() {
-            return games.toString();
-        }
+        return List.copyOf(schedule);
     }
 
     public static final class Builder {
         private String school;
         private String mascot;
         private String abbreviation;
-        private Schedule schedule;
 
         public Builder() {
         }
@@ -87,11 +64,6 @@ public class School implements Serializable {
 
         public Builder withAbbreviation(String abbreviation) {
             this.abbreviation = abbreviation;
-            return this;
-        }
-
-        public Builder withSchedule(Schedule schedule) {
-            this.schedule = schedule;
             return this;
         }
 

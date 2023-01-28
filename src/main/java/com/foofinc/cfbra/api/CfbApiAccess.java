@@ -16,9 +16,7 @@ public final class CfbApiAccess {
     private final String teamGamesUrlString = "https://api.collegefootballdata.com/games/teams?year=2022&seasonType=regular";
 
     private final List<SchoolDto> schools;
-
     private final List<FixtureDto[]> weeks;
-//    private final List<Game> weeks;
 
     public CfbApiAccess() {
         schools = getAllSchools();
@@ -39,16 +37,20 @@ public final class CfbApiAccess {
 
     private List<FixtureDto[]> getFixturesForAllWeeks() {
         List<FixtureDto[]> tempFixes = new ArrayList<>();
-        int startingWeek = 1, weeksInSeason = 13;
+        int startingWeek = 1, weeksInSeason = 15;
         for (int i = startingWeek; i <= weeksInSeason; i++) {
-            tempFixes.add(sendGetRequestForWeekFixtures(i));
+            FixtureDto[] tempFixDto = sendGetRequestForWeekFixtures(i);
+            if (tempFixDto.length == 0) {
+                break;
+            }
+            tempFixes.add(tempFixDto);
         }
         return tempFixes;
     }
 
     private List<SchoolDto> sendGetRequestForAllFBSSchools() {
         try {
-            return mapSchoolsFromJSON(getJSON(schoolsUrlString));
+            return mapSchoolsFromJSON(getJSONFromAPI(schoolsUrlString));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -56,7 +58,7 @@ public final class CfbApiAccess {
 
     private FixtureDto[] sendGetRequestForWeekFixtures(int week) {
         try {
-            return mapWeekFromJSON(getJSON(teamGamesUrlString + "&week=" + week));
+            return mapWeekFromJSON(getJSONFromAPI(teamGamesUrlString + "&week=" + week));
         } catch (IOException e) {
             throw new RuntimeException();
         }
@@ -73,8 +75,8 @@ public final class CfbApiAccess {
         return mapper.readValue(jsonString, FixtureDto[].class);
     }
 
-    private String getJSON(String s) throws IOException {
-        return APICaller.INSTANCE.getJSONFromAPICall(s,"gLQdG5n7YtiTjzu/bxxxd" +
+    private String getJSONFromAPI(String s) throws IOException {
+        return APICaller.INSTANCE.getJSONFromAPICall(s, "gLQdG5n7YtiTjzu/bxxxd" +
                 "+rdzzrhWftHTtIH7PAGVWlAQMOAA7h2ria3ai2Dl9zc");
     }
 }

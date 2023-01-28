@@ -3,19 +3,14 @@ package com.foofinc.cfbra.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-//Singleton wrapper class
-public class Teams {
+/*
+Singleton wrapper class
+ */
+public enum Teams {
 
-    private final static Teams instance = new Teams();
-    private final List<StatisticizedTeam> statisticizedTeams;
+    INSTANCE;
 
-    private Teams() {
-        this.statisticizedTeams = new ArrayList<>();
-    }
-
-    public static Teams getInstance() {
-        return instance;
-    }
+    private final List<StatisticizedTeam> statisticizedTeams = new ArrayList<>();
 
     public List<StatisticizedTeam> getCompleteTeams() {
         return statisticizedTeams;

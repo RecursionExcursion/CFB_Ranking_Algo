@@ -4,6 +4,7 @@ import com.foofinc.cfbra.api.dto.FixtureDto;
 import com.foofinc.cfbra.api.dto.SchoolDto;
 import com.foofinc.cfbra.api.dto.StatsDto;
 import com.foofinc.cfbra.api.dto.TeamDto;
+import com.foofinc.cfbra.entity.SchoolList;
 
 public class ModelGenerator {
 
@@ -16,19 +17,21 @@ public class ModelGenerator {
 
     public static void generateGame(FixtureDto fixtureDto) {
 
-        TeamDto home = fixtureDto.getTeams()[0];
-        TeamDto away = fixtureDto.getTeams()[1];
+        TeamDto away = fixtureDto.getTeams()[0];
+        TeamDto home = fixtureDto.getTeams()[1];
 
-        String homeTeam = home.getSchool();
+        //Home Stats
+        String homeTeamName = home.getSchool();
         int homeScore = home.getPoints();
         int homeYards = Integer.parseInt(getTotalYards(home));
 
-        String awayTeam = away.getSchool();
+        //Away Stats
+        String awayTeamName = away.getSchool();
         int awayScore = away.getPoints();
         int awayYards = Integer.parseInt(getTotalYards(away));
 
-        School homeSchool = getSchoolFromString(homeTeam);
-        School awaySchool = getSchoolFromString(awayTeam);
+        School homeSchool = getSchoolFromString(homeTeamName);
+        School awaySchool = getSchoolFromString(awayTeamName);
 
 
         Game game = new Game.Builder().withHome(homeSchool)
@@ -43,9 +46,9 @@ public class ModelGenerator {
         awaySchool.addGameToSchedule(game);
     }
 
-    private static School getSchoolFromString(String s) {
-        return SchoolList.INSTANCE.getSchoolFromString(s)
-                                  .orElse(new School(s, null, null));
+    private static School getSchoolFromString(String schoolName) {
+        return SchoolList.INSTANCE.getSchoolFromString(schoolName)
+                                  .orElse(new School(schoolName, null, null));
 
     }
 
@@ -57,7 +60,7 @@ public class ModelGenerator {
                 return stat.getStat();
             }
         }
-        //Return Min.Value to point to show error in stats
+        //Return Min.Value to point to show error in stats, ex. Ohio State -3900000 yards.
         return String.valueOf(Integer.MIN_VALUE);
     }
 }

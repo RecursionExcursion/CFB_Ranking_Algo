@@ -1,6 +1,6 @@
 package com.foofinc.cfbra.json;
 
-import com.foofinc.cfbra.entity.CompleteTeamMapper;
+import com.foofinc.cfbra.entity.SchoolToStatTeamMapper;
 import com.foofinc.cfbra.entity.StatisticizedTeam;
 import org.junit.jupiter.api.Test;
 
@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StatisticizedTeamMapperTestDto {
 
-    private CompleteTeamMapper mapper;
+    private SchoolToStatTeamMapper mapper;
 
     public StatisticizedTeamMapperTestDto() {
 
@@ -18,7 +18,7 @@ class StatisticizedTeamMapperTestDto {
     void getCompleteTeam() {
         StatisticizedTeam statisticizedTeamTest = mapper.getCompleteTeam();
 
-        assertEquals(statisticizedTeamTest.getName(), "Oregon");
+        assertEquals(statisticizedTeamTest.getSchool(), "Oregon");
         assertEquals(statisticizedTeamTest.getWins(), 1);
         assertEquals(statisticizedTeamTest.getPointsFor(), 28);
         assertEquals(statisticizedTeamTest.getPointsAllowed(), 21);

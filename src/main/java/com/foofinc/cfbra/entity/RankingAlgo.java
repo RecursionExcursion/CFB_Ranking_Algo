@@ -14,11 +14,11 @@ public class RankingAlgo {
 
     //StatisticizedTeam method signatures
     private final String getWinsString = "getWins";
-    private final String getPointsForString = "getPointsFor";
-    private final String getPointsAllowedString = "getPointsAllowed";
-    private final String getTotalOffenseString = "getTotalOffense";
-    private final String getTotalDefenseString = "getTotalDefense";
-    private final String getStrengthOfScheduleString = "getStrengthOfSchedule";
+    private final String getPointsForString = "getPointsForPerGame";
+    private final String getPointsAllowedString = "getPointsAllowedPerGame";
+    private final String getTotalOffenseString = "getOffensePerGame";
+    private final String getTotalDefenseString = "getDefensePerGame";
+    private final String getStrengthOfScheduleString = "getStrengthOfSchedulePerGame";
 
 
     public RankingAlgo(List<StatisticizedTeam> statTeam) {
@@ -32,6 +32,9 @@ public class RankingAlgo {
     }
 
     public void rankTeams() {
+
+        //TODO Refactor
+
         rankTeamsByCategory();
         getWeightedRankings();
 
@@ -40,11 +43,28 @@ public class RankingAlgo {
                                                               .sorted(Comparator.comparingDouble(Map.Entry::getValue))
                                                               .toList());
 
+        rankedTeams = rankingLists.getTeamsRankedByTotalWeight()
+                                  .stream()
+                                  .map(Map.Entry::getKey)
+                                  .toList();
+
+        //TODO Calc SS against rankedTeamsList
+        rankedTeams.forEach(rt -> rt.calculateStrengthOfSchedulePerGame(rankedTeams));
+
+        rankingLists.setTeamsRankedByStrengthOfSchedule(rankTeamsByMethodCalled(getStrengthOfScheduleString));
+        getWeightOfRankings(rankingLists.getTeamsRankedByStrengthOfSchedule(), getStrengthOfScheduleString);
+
+        rankingLists.setTeamsRankedByTotalWeight(teamWeightMap.entrySet()
+                                                              .stream()
+                                                              .sorted(Comparator.comparingDouble(Map.Entry::getValue))
+                                                              .toList());
 
         rankedTeams = rankingLists.getTeamsRankedByTotalWeight()
                                   .stream()
                                   .map(Map.Entry::getKey)
                                   .toList();
+
+        setWeight();
 
         setRankings(rankedTeams);
     }
@@ -55,7 +75,6 @@ public class RankingAlgo {
         rankingLists.setTeamsRankedByPointsAllowed(rankTeamsByMethodCalled(getPointsAllowedString));
         rankingLists.setTeamsRankedByTotalOffense(rankTeamsByMethodCalled(getTotalOffenseString));
         rankingLists.setTeamsRankedByTotalDefense(rankTeamsByMethodCalled(getTotalDefenseString));
-        rankingLists.setTeamsRankedByStrengthOfSchedule(rankTeamsByMethodCalled(getStrengthOfScheduleString));
     }
 
     private void getWeightedRankings() {
@@ -64,7 +83,6 @@ public class RankingAlgo {
         getWeightOfRankings(rankingLists.getTeamsRankedByPointsAllowed(), getPointsAllowedString);
         getWeightOfRankings(rankingLists.getTeamsRankedByTotalOffense(), getTotalOffenseString);
         getWeightOfRankings(rankingLists.getTeamsRankedByTotalDefense(), getTotalDefenseString);
-        getWeightOfRankings(rankingLists.getTeamsRankedByStrengthOfSchedule(), getStrengthOfScheduleString);
         setWeight();
     }
 
@@ -74,10 +92,16 @@ public class RankingAlgo {
      */
     private void getWeightOfRankings(List<StatisticizedTeam> rankedTeams, String methodName) {
 
-        int multiplier = Objects.equals(methodName, getWinsString) ? 10 : 1;
-        multiplier = Objects.equals(methodName, getPointsForString) ? 5 : multiplier;
-        multiplier = Objects.equals(methodName, getPointsAllowedString) ? 5 : multiplier;
-        multiplier = Objects.equals(methodName, getStrengthOfScheduleString) ? 3 : multiplier;
+        int multiplier = 1;
+        switch (methodName) {
+            case getWinsString -> multiplier = WEIGHT.WINS.getVal();
+            case getPointsForString -> multiplier = WEIGHT.POINTS_FOR.getVal();
+            case getPointsAllowedString -> multiplier = WEIGHT.POINTS_ALLOWED.getVal();
+            case getStrengthOfScheduleString -> multiplier = WEIGHT.STRENGTH_OF_SCHEDULE.getVal();
+            case getTotalOffenseString -> multiplier = WEIGHT.OFFENSIVE_YARDS.getVal();
+            case getTotalDefenseString -> multiplier = WEIGHT.DEFENSIVE_YARDS.getVal();
+        }
+
 
         try {
             //Placeholder for previous team
@@ -94,8 +118,8 @@ public class RankingAlgo {
                     Method method = StatisticizedTeam.class.getMethod(methodName);
 
                     //Get stat of this team and previous team
-                    int lastTeamValue = (int) method.invoke(lastTeam);
-                    int indexedTeamValue = (int) method.invoke(indexedTeam);
+                    double lastTeamValue = Double.parseDouble(String.valueOf(method.invoke(lastTeam)));
+                    double indexedTeamValue = Double.parseDouble(String.valueOf(method.invoke(indexedTeam)));
 
                     //If they are different, move weight index to current list index
                     if (lastTeamValue != indexedTeamValue) {
@@ -117,38 +141,39 @@ public class RankingAlgo {
         return switch (methodName) {
             case getWinsString -> teamWeightMap.keySet()
                                                .stream()
-                                               .sorted(Comparator.comparing(StatisticizedTeam::getWins).reversed())
+                                               .sorted(Comparator.comparing(StatisticizedTeam::getWins)
+                                                                 .reversed())
                                                .toList();
 
             case getPointsForString -> teamWeightMap.keySet()
                                                     .stream()
-                                                    .sorted(Comparator.comparingInt(StatisticizedTeam::getPointsFor)
+                                                    .sorted(Comparator.comparing(StatisticizedTeam::getPointsForPerGame)
                                                                       .reversed())
                                                     .toList();
 
             case getPointsAllowedString -> teamWeightMap.keySet()
                                                         .stream()
-                                                        .sorted(Comparator.comparingInt(StatisticizedTeam::getPointsAllowed))
+                                                        .sorted(Comparator.comparing(StatisticizedTeam::getPointsAllowedPerGame))
                                                         .toList();
 
             case getTotalOffenseString -> teamWeightMap.keySet()
                                                        .stream()
-                                                       .sorted(Comparator.comparingInt(StatisticizedTeam::getTotalOffense)
+                                                       .sorted(Comparator.comparing(StatisticizedTeam::getOffensePerGame)
                                                                          .reversed())
                                                        .toList();
 
             case getTotalDefenseString -> teamWeightMap.keySet()
                                                        .stream()
-                                                       .sorted(Comparator.comparing(StatisticizedTeam::getTotalDefense))
+                                                       .sorted(Comparator.comparing(StatisticizedTeam::getDefensePerGame))
                                                        .toList();
 
             case getStrengthOfScheduleString -> teamWeightMap.keySet()
                                                              .stream()
-                                                             .sorted(Comparator.comparing(StatisticizedTeam::getStrengthOfSchedule)
-                                                                               .reversed())
+                                                             .sorted(Comparator.comparing(StatisticizedTeam::getStrengthOfSchedulePerGame))
                                                              .toList();
 
-            default -> throw new IllegalArgumentException("Method does not exist for object of type 'CompleteTeam'");
+            default ->
+                    throw new IllegalArgumentException("Method does not exist for object of type 'StatisticizedTeam'");
         };
     }
 
@@ -158,7 +183,8 @@ public class RankingAlgo {
 
     private void setRankings(List<StatisticizedTeam> rankings) {
         for (int i = 0; i < rankings.size(); i++) {
-            rankings.get(i).setRank(i + 1);
+            rankings.get(i)
+                    .setRank(i + 1);
         }
     }
 
@@ -167,7 +193,7 @@ public class RankingAlgo {
         return rankedTeams.toString();
     }
 
-    class RankingLists {
+    static class RankingLists {
 
         private List<StatisticizedTeam> teamsRankedByRecord;
         private List<StatisticizedTeam> teamsRankedByPointsFor;
@@ -178,59 +204,62 @@ public class RankingAlgo {
 
         private List<Map.Entry<StatisticizedTeam, Double>> teamsRankedByTotalWeight;
 
-        public List<StatisticizedTeam> getTeamsRankedByRecord() {
+        void resetTotalWeight(){
+
+        }
+         List<StatisticizedTeam> getTeamsRankedByRecord() {
             return teamsRankedByRecord;
         }
 
-        public void setTeamsRankedByRecord(List<StatisticizedTeam> teamsRankedByRecord) {
+         void setTeamsRankedByRecord(List<StatisticizedTeam> teamsRankedByRecord) {
             this.teamsRankedByRecord = teamsRankedByRecord;
         }
 
-        public List<StatisticizedTeam> getTeamsRankedByPointsFor() {
+         List<StatisticizedTeam> getTeamsRankedByPointsFor() {
             return teamsRankedByPointsFor;
         }
 
-        public void setTeamsRankedByPointsFor(List<StatisticizedTeam> teamsRankedByPointsFor) {
+         void setTeamsRankedByPointsFor(List<StatisticizedTeam> teamsRankedByPointsFor) {
             this.teamsRankedByPointsFor = teamsRankedByPointsFor;
         }
 
-        public List<StatisticizedTeam> getTeamsRankedByPointsAllowed() {
+         List<StatisticizedTeam> getTeamsRankedByPointsAllowed() {
             return teamsRankedByPointsAllowed;
         }
 
-        public void setTeamsRankedByPointsAllowed(List<StatisticizedTeam> teamsRankedByPointsAllowed) {
+         void setTeamsRankedByPointsAllowed(List<StatisticizedTeam> teamsRankedByPointsAllowed) {
             this.teamsRankedByPointsAllowed = teamsRankedByPointsAllowed;
         }
 
-        public List<StatisticizedTeam> getTeamsRankedByTotalOffense() {
+         List<StatisticizedTeam> getTeamsRankedByTotalOffense() {
             return teamsRankedByTotalOffense;
         }
 
-        public void setTeamsRankedByTotalOffense(List<StatisticizedTeam> teamsRankedByTotalOffense) {
+         void setTeamsRankedByTotalOffense(List<StatisticizedTeam> teamsRankedByTotalOffense) {
             this.teamsRankedByTotalOffense = teamsRankedByTotalOffense;
         }
 
-        public List<StatisticizedTeam> getTeamsRankedByTotalDefense() {
+         List<StatisticizedTeam> getTeamsRankedByTotalDefense() {
             return teamsRankedByTotalDefense;
         }
 
-        public void setTeamsRankedByTotalDefense(List<StatisticizedTeam> teamsRankedByTotalDefense) {
+         void setTeamsRankedByTotalDefense(List<StatisticizedTeam> teamsRankedByTotalDefense) {
             this.teamsRankedByTotalDefense = teamsRankedByTotalDefense;
         }
 
-        public List<StatisticizedTeam> getTeamsRankedByStrengthOfSchedule() {
+         List<StatisticizedTeam> getTeamsRankedByStrengthOfSchedule() {
             return teamsRankedByStrengthOfSchedule;
         }
 
-        public void setTeamsRankedByStrengthOfSchedule(List<StatisticizedTeam> teamsRankedByStrengthOfSchedule) {
+         void setTeamsRankedByStrengthOfSchedule(List<StatisticizedTeam> teamsRankedByStrengthOfSchedule) {
             this.teamsRankedByStrengthOfSchedule = teamsRankedByStrengthOfSchedule;
         }
 
-        public List<Map.Entry<StatisticizedTeam, Double>> getTeamsRankedByTotalWeight() {
+         List<Map.Entry<StatisticizedTeam, Double>> getTeamsRankedByTotalWeight() {
             return teamsRankedByTotalWeight;
         }
 
-        public void setTeamsRankedByTotalWeight(List<Map.Entry<StatisticizedTeam, Double>> teamsRankedByTotalWeight) {
+         void setTeamsRankedByTotalWeight(List<Map.Entry<StatisticizedTeam, Double>> teamsRankedByTotalWeight) {
             this.teamsRankedByTotalWeight = teamsRankedByTotalWeight;
         }
     }
