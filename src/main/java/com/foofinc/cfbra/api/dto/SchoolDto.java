@@ -10,7 +10,8 @@ Arg constructor for testing
  */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SchoolDto {
+public class SchoolDto implements DTO{
+    private long id;
     private String school;
     private String mascot;
     private String abbreviation;
@@ -46,6 +47,14 @@ public class SchoolDto {
 
     public void setAbbreviation(String abbreviation) {
         this.abbreviation = abbreviation;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     @Override

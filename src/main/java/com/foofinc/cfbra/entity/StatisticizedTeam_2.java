@@ -6,14 +6,13 @@ import com.foofinc.cfbra.entity.model.School;
 import java.util.List;
 import java.util.Optional;
 
-public class StatisticizedTeam {
+public class StatisticizedTeam_2 {
 
     private School school;
     private int rank;
     private Record record;
     private Double weight;
 
-    private final List<Game> schedule;
 
     private int totalOffense;
     private int totalDefense;
@@ -23,20 +22,19 @@ public class StatisticizedTeam {
 
     private int strengthOfSchedule;
 
-    //TODO Add conference stats????
-
     private double pointsForPerGame;
     private double pointsAllowedPerGame;
     private double offensePerGame;
     private double defensePerGame;
     private double strengthOfSchedulePerGame;
 
+    private int gamesPlayed;
 
-    public StatisticizedTeam(School school) {
+
+    public StatisticizedTeam_2(School school) {
         this.school = school;
         rank = 0;
         record = new Record();
-        schedule = school.getSchedule();
         totalOffense = 0;
         totalDefense = 0;
         pointsAllowed = 0;
@@ -48,52 +46,20 @@ public class StatisticizedTeam {
         offensePerGame = 0.00;
         defensePerGame = 0.00;
         strengthOfSchedulePerGame = -1.0;
+        gamesPlayed = 0;
     }
 
-
-    public double getPointsForPerGame() {
-        pointsForPerGame = (double) pointsFor / schedule.size();
-        return pointsForPerGame;
+    public static StatisticizedTeam_2 createTeam(School s) {
+        return new StatisticizedTeam_2(s);
     }
 
-    public double getPointsAllowedPerGame() {
-        pointsAllowedPerGame = (double) pointsAllowed / schedule.size();
-        return pointsAllowedPerGame;
+    public School getSchool() {
+        return school;
     }
 
-    public double getOffensePerGame() {
-        offensePerGame = (double) totalOffense / schedule.size();
-        return offensePerGame;
-    }
-
-    public double getDefensePerGame() {
-        defensePerGame = (double) totalDefense / schedule.size();
-        return defensePerGame;
-    }
-
-    public double calculateStrengthOfSchedulePerGame(List<StatisticizedTeam> partiallyRankedTeams) {
-        if (strengthOfSchedulePerGame == -1.0) {
-            strengthOfSchedulePerGame =
-                    (double) getStrengthOfSchedule(partiallyRankedTeams) / schedule.size();
-        }
-        return strengthOfSchedulePerGame;
-    }
-
-    public double getStrengthOfSchedulePerGame() {
-        if (strengthOfSchedulePerGame == -1.0) {
-            throw new IllegalStateException("Strength of Schedule has not been calculated");
-        }
-        return strengthOfSchedulePerGame;
-    }
-
-    public void setRank(int rank) {
-        this.rank = rank;
-    }
-
-    public void setRecord(Record record) {
-        this.record = record;
-    }
-
+    /*
+    Adder Methods
+     */
     public void addToTotalOffense(int offense) {
         this.totalOffense += offense;
     }
@@ -118,76 +84,79 @@ public class StatisticizedTeam {
         record.incLoses();
     }
 
+    public void addGamesPlayed() {
+        gamesPlayed++;
+    }
+
+    /*
+    Getter Methods- Method names are tightly coupled to Ranking Algo Strings
+     */
     public int getWins() {
         return record.getWins();
     }
 
-    public School getSchool() {
-        return school;
+    public double getPointsForPerGame() {
+        pointsForPerGame = (double) pointsFor / gamesPlayed;
+        return pointsForPerGame;
     }
 
-    public int getRank() {
-        return rank;
+    public double getPointsAllowedPerGame() {
+        pointsAllowedPerGame = (double) pointsAllowed / gamesPlayed;
+        return pointsAllowedPerGame;
     }
 
-    public Record getRecord() {
-        return record;
+    public double getOffensePerGame() {
+        offensePerGame = (double) totalOffense / gamesPlayed;
+        return offensePerGame;
     }
 
-    public List<Game> getSchedule() {
-        return schedule;
+    public double getDefensePerGame() {
+        defensePerGame = (double) totalDefense / gamesPlayed;
+        return defensePerGame;
     }
 
-    public int getTotalOffense() {
-        return totalOffense;
+    public double getStrengthOfSchedulePerGame() {
+        if (strengthOfSchedulePerGame == -1.0) {
+            throw new IllegalStateException("Strength of Schedule has not been calculated");
+        }
+        return strengthOfSchedulePerGame;
     }
 
-    public int getTotalDefense() {
-        return totalDefense;
+    /*
+    Methods used to calculate Strength of schedule
+     */
+    public double calculateStrengthOfSchedulePerGame(List<StatisticizedTeam_2> partiallyRankedTeams) {
+        strengthOfSchedulePerGame = (double) getStrengthOfSchedule(partiallyRankedTeams) / gamesPlayed;
+        return strengthOfSchedulePerGame;
     }
 
-    public int getPointsAllowed() {
-        return pointsAllowed;
-    }
-
-    public int getPointsFor() {
-        return pointsFor;
-    }
-
-    public int getStrengthOfSchedule(List<StatisticizedTeam> partiallyRankedTeams) {
+    public int getStrengthOfSchedule(List<StatisticizedTeam_2> partiallyRankedTeams) {
         return calculateStrengthOfSchedule(partiallyRankedTeams);
 
     }
 
-    public Double getWeight() {
-        return weight;
-    }
-
-    public void setWeight(Double weight) {
-        this.weight = weight;
-    }
-
-    private int calculateStrengthOfSchedule(List<StatisticizedTeam> partiallyRankedTeams) {
+    private int calculateStrengthOfSchedule(List<StatisticizedTeam_2> partiallyRankedTeams) {
         int schedStr = 0;
 
-        List<StatisticizedTeam> allTeams = Teams.INSTANCE.getCompleteTeams();
+        List<StatisticizedTeam_2> allTeams = Teams_2.INSTANCE.getTeams();
 
-        for (Game game : schedule) {
+        for (int i = 0; i < gamesPlayed; i++) {
+            Game game = school.getSchedule().get(i);
 
-            StatisticizedTeam opponent = null;
+            StatisticizedTeam_2 opponent = null;
 
             School homeTeam = game.getHome();
             School awayTeam = game.getAway();
 
             if (homeTeam == this.school) {
-                for (StatisticizedTeam ct : allTeams) {
+                for (StatisticizedTeam_2 ct : allTeams) {
                     if (ct.getSchool() == awayTeam) {
                         opponent = ct;
                         break;
                     }
                 }
             } else {
-                for (StatisticizedTeam ct : allTeams) {
+                for (StatisticizedTeam_2 ct : allTeams) {
                     if (ct.getSchool() == homeTeam) {
                         opponent = ct;
                         break;
@@ -195,10 +164,10 @@ public class StatisticizedTeam {
                 }
             }
 
-            Optional<StatisticizedTeam> optionalOpponents =
+            Optional<StatisticizedTeam_2> optionalOpponents =
                     Optional.of(Optional.ofNullable(opponent)
-                                        .orElseGet(() -> new StatisticizedTeam(new School("Null Team", "Nullables",
-                                                                                          "Null"))));
+                                        .orElseGet(() -> new StatisticizedTeam_2(new School(-1,"Null Team", "Nullables",
+                                                                                            "Null"))));
             opponent = optionalOpponents.get();
 
 
@@ -212,6 +181,20 @@ public class StatisticizedTeam {
         return schedStr;
     }
 
+    /*
+    Setter Methods
+     */
+    public void setRank(int rank) {
+        this.rank = rank;
+    }
+
+    public void setWeight(Double weight) {
+        this.weight = weight;
+    }
+
+    /*
+    Utility Methods
+     */
     @Override
     public String toString() {
 
@@ -229,6 +212,9 @@ public class StatisticizedTeam {
         return String.format("%.2f", num);
     }
 
+    /*
+    Nested Classes
+     */
     private static class Record {
         private int wins;
         private int loses;

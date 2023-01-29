@@ -12,7 +12,8 @@ Arg constructor for testing
  */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FixtureDto {
+public class FixtureDto implements DTO {
+    long id;
     private TeamDto[] teams;
 
     public FixtureDto(TeamDto[] teams) {
@@ -28,6 +29,14 @@ public class FixtureDto {
 
     public void setTeams(TeamDto[] teams) {
         this.teams = teams;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     @Override

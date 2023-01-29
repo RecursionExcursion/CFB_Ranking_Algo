@@ -1,7 +1,7 @@
 package com.foofinc.cfbra.persistence;
 
 import com.foofinc.cfbra.controller.LocalMemoryController;
-import com.foofinc.cfbra.entity.SchoolList;
+import com.foofinc.cfbra.entity.model.SchoolList;
 import com.foofinc.cfbra.util.TestUtil;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +21,7 @@ class MemorySerializationManagerTest {
 
         SchoolList schoolList = SchoolList.INSTANCE;
 
-        memorySerializationManager.save((Serializable) schoolList.getSchools());
+        memorySerializationManager.save((Serializable) schoolList.getSchoolsAsList());
     }
 
     @Test

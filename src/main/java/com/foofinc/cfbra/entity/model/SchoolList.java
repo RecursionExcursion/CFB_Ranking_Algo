@@ -1,6 +1,4 @@
-package com.foofinc.cfbra.entity;
-
-import com.foofinc.cfbra.entity.model.School;
+package com.foofinc.cfbra.entity.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,22 +12,32 @@ public enum SchoolList {
 
     INSTANCE;
 
-    private List<School> schools = new ArrayList<>();
+    //    private List<School> schools = new ArrayList<>();
+    private Schools schools = new Schools(new ArrayList<>());
 
-    public void loadSchools(List<School> s) {
-        schools = s;
+    public void loadSchools(Schools s) {
+        schools.loadSchools(s);
     }
 
-    public List<School> getSchools() {
+    public void loadSchools(List<School> s) {
+        schools.loadSchools(s);
+    }
+
+    public List<School> getSchoolsAsList() {
+        return schools.getSchoolsAsList();
+    }
+
+    public Schools getSchoolsAsSchools() {
         return schools;
     }
 
     public void addSchool(School school) {
-        schools.add(school);
+        schools.addSchool(school);
     }
 
     public Optional<School> getSchoolFromString(String schoolString) {
-        return schools.stream()
+        return schools.getSchoolsAsList()
+                      .stream()
                       .filter(s -> s.getSchoolNameString()
                                     .equals(schoolString))
                       .findFirst();

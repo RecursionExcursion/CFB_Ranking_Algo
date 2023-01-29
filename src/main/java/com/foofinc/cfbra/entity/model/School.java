@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class School implements Serializable {
+    private final long id;
     private final String schoolName;
     private final String mascot;
     private final String abbreviation;
     private final List<Game> schedule;
 
-    public School(String school, String mascot, String abbreviation) {
+    public School(long id, String school, String mascot, String abbreviation) {
+        this.id = id;
         this.schoolName = school;
         this.mascot = mascot;
         this.abbreviation = abbreviation;
@@ -18,6 +20,7 @@ public class School implements Serializable {
     }
 
     private School(Builder builder) {
+        id = builder.id;
         schoolName = builder.school;
         mascot = builder.mascot;
         abbreviation = builder.abbreviation;
@@ -45,11 +48,17 @@ public class School implements Serializable {
     }
 
     public static final class Builder {
+        private long id;
         private String school;
         private String mascot;
         private String abbreviation;
 
         public Builder() {
+        }
+
+        public Builder withId(long id) {
+            this.id = id;
+            return this;
         }
 
         public Builder withSchool(String school) {

@@ -1,24 +1,24 @@
 package com.foofinc.cfbra.entity.model;
 
-import com.foofinc.cfbra.api.dto.FixtureDto;
-import com.foofinc.cfbra.api.dto.SchoolDto;
-import com.foofinc.cfbra.api.dto.StatsDto;
-import com.foofinc.cfbra.api.dto.TeamDto;
-import com.foofinc.cfbra.entity.SchoolList;
+import com.foofinc.cfbra.api.dto.*;
 
 public class ModelGenerator {
 
     public static School generateSchool(SchoolDto schoolDto) {
-        return new School.Builder().withSchool(schoolDto.getSchool())
+        return new School.Builder().withId(schoolDto.getId())
+                                   .withSchool(schoolDto.getSchool())
                                    .withMascot(schoolDto.getMascot())
                                    .withAbbreviation(schoolDto.getAbbreviation())
                                    .build();
     }
 
-    public static void generateGame(FixtureDto fixtureDto) {
+    public static void generateGame(CompleteGameDto completeGameDto) {
 
-        TeamDto away = fixtureDto.getTeams()[0];
-        TeamDto home = fixtureDto.getTeams()[1];
+        TeamDto away = completeGameDto.getFixtureDto()
+                                      .getTeams()[0];
+        TeamDto home = completeGameDto.getFixtureDto()
+                                      .getTeams()[1];
+
 
         //Home Stats
         String homeTeamName = home.getSchool();
@@ -34,12 +34,26 @@ public class ModelGenerator {
         School awaySchool = getSchoolFromString(awayTeamName);
 
 
-        Game game = new Game.Builder().withHome(homeSchool)
+        Game game = new Game.Builder().withId(completeGameDto.getFixtureDto()
+                                                             .getId())
+                                      .withHome(homeSchool)
                                       .withHomeScore(homeScore)
                                       .withHomeYardsGained(homeYards)
                                       .withAway(awaySchool)
                                       .withAwayScore(awayScore)
                                       .withAwayYardsGained(awayYards)
+                                      .withSeason(completeGameDto.getGameDataDto()
+                                                                 .getSeason())
+                                      .withWeek(completeGameDto.getGameDataDto()
+                                                               .getWeek())
+                                      .withSeason_type(completeGameDto.getGameDataDto()
+                                                                      .getSeason_type())
+                                      .withStart_date(completeGameDto.getGameDataDto()
+                                                                     .getStart_date())
+                                      .withHome_id(completeGameDto.getGameDataDto()
+                                                                  .getHome_id())
+                                      .withAway_id(completeGameDto.getGameDataDto()
+                                                                  .getAway_id())
                                       .build();
 
         homeSchool.addGameToSchedule(game);
@@ -48,7 +62,7 @@ public class ModelGenerator {
 
     private static School getSchoolFromString(String schoolName) {
         return SchoolList.INSTANCE.getSchoolFromString(schoolName)
-                                  .orElse(new School(schoolName, null, null));
+                                  .orElse(new School(-1, schoolName, null, null));
 
     }
 
@@ -60,7 +74,7 @@ public class ModelGenerator {
                 return stat.getStat();
             }
         }
-        //Return Min.Value to point to show error in stats, ex. Ohio State -3900000 yards.
+        //Return Min.Value to point to show error in stats, ex. Ohio State ~-2147483648 yards.
         return String.valueOf(Integer.MIN_VALUE);
     }
 }

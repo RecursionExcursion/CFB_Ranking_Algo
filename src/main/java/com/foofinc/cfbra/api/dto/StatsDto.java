@@ -10,7 +10,7 @@ Arg constructor for testing
  */
 
 @JsonIgnoreProperties()
-public class StatsDto {
+public class StatsDto implements DTO {
     private String category;
     private String stat;
 

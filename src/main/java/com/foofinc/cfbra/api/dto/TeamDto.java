@@ -12,7 +12,7 @@ Arg constructor for testing
  */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TeamDto {
+public class TeamDto implements DTO{
     private String school;
     private int points;
     private StatsDto[] stats;

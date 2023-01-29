@@ -1,10 +1,10 @@
 package com.foofinc.cfbra.run;
 
 
-import com.foofinc.cfbra.controller.Controller;
+import com.foofinc.cfbra.controller.FBSController;
 
 public class Main {
     public static void main(String[] args) {
-        Controller.getInstance().RankAndPrint();
+        FBSController.getInstance().RankAndPrint();
     }
 }
